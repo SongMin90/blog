@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.my.blog.website.dao.VisitorVoMapper">
+
+    <insert id="insert" parameterType="com.my.blog.website.modal.Vo.VisitorVo">
+	    INSERT INTO `t_visitor` (
+	    	`id`,
+			`ip`,
+			`addr`,
+			`terminal`,
+			`datetime`
+		) VALUES (
+			#{id,jdbcType=VARCHAR},
+			#{ip,jdbcType=VARCHAR},
+			#{addr,jdbcType=VARCHAR},
+			#{terminal,jdbcType=VARCHAR},
+			#{datetime,jdbcType=TIMESTAMP}
+		)
+    </insert>
+    
+    <select id="selectById" parameterType="String" resultType="com.my.blog.website.modal.Vo.VisitorVo">
+        SELECT * FROM `t_visitor` WHERE id=#{id,jdbcType=VARCHAR}
+    </select>
+    
+    <select id="selectAll" resultType="com.my.blog.website.modal.Vo.VisitorVo">
+        SELECT * FROM `t_visitor` ORDER BY datetime DESC
+    </select>
+    
+    <select id="selectAllCount" resultType="java.lang.Long">
+        SELECT count(*) FROM `t_visitor`
+    </select>
+
+	<select id="interceptIds" resultType="String">
+		SELECT id FROM `t_visitor` WHERE intercept=1
+	</select>
+    
+    <update id="updateById" parameterType="com.my.blog.website.modal.Vo.VisitorVo">
+        UPDATE 
+        	`t_visitor`
+		SET 
+			`ip` = #{ip,jdbcType=VARCHAR},
+			`addr` = #{addr,jdbcType=VARCHAR},
+			`terminal` = #{terminal,jdbcType=VARCHAR},
+			`datetime` = #{datetime,jdbcType=TIMESTAMP},
+			`count` = #{count,jdbcType=INTEGER},
+			`intercept` = #{intercept,jdbcType=BIT}
+		WHERE
+			(`id` = #{id,jdbcType=VARCHAR})
+    </update>
+
+	<!-- 插入一条数据，如果主键存在则更新count -->
+	<insert id="insertOrUpdate" parameterType="com.my.blog.website.modal.Vo.VisitorVo">
+		INSERT INTO `t_visitor` (
+			`id`,
+			`ip`,
+			`addr`,
+			`terminal`,
+			`datetime`
+		) VALUES (
+			#{id,jdbcType=VARCHAR},
+			#{ip,jdbcType=VARCHAR},
+			#{addr,jdbcType=VARCHAR},
+			#{terminal,jdbcType=VARCHAR},
+			#{datetime,jdbcType=TIMESTAMP}
+		)
+		ON DUPLICATE KEY UPDATE
+		`count` = `count` + 1,
+		`datetime` = NOW()
+	</insert>
+    
+</mapper>
