@@ -1,11 +1,13 @@
 package com.my.blog.website.modal.Vo;
 
+import java.io.Serializable;
+
 /**
  * @author SongM
  * @description 聊天
  * @date 2018/4/7 14:37
  */
-public class ChatVo {
+public class ChatVo implements Serializable {
     private int id;
     private String userId;
     private String datetime;

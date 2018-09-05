@@ -18,7 +18,9 @@ import cn.binarywang.tools.generator.ChineseNameGenerator;
 import com.my.blog.website.dao.ChatVoMapper;
 import com.my.blog.website.modal.Vo.ChatVo;
 import com.my.blog.website.utils.DateKit;
+import com.my.blog.website.utils.TaleUtils;
 import com.my.blog.website.websocket.utils.ApplicationContextRegister;
+import com.vdurmont.emoji.EmojiParser;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
@@ -80,6 +82,10 @@ public class ChatWebSocket {
 		} else {
 			json.clear();
 		}
+		//格式化消息
+		message = TaleUtils.cleanXSS(message);
+		message = EmojiParser.parseToAliases(message);
+		//初始化bean
 		ChatVo chat = new ChatVo(userId, DateKit.dateFormat(new Date()), users.get(userId).getUsername(), message);
 		json.put("chat", chat);
 		//发送消息到页面
@@ -108,7 +114,7 @@ public class ChatWebSocket {
 			for (String key : users.keySet()) {
 				User user = users.get(key);
 				Session session = user.getSession();
-				session.getBasicRemote().sendText(message);
+				session.getBasicRemote().sendText(EmojiParser.parseToUnicode(message));
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -158,6 +164,7 @@ public class ChatWebSocket {
 				} else {
 					json.clear();
 				}
+				chat.setMessage(EmojiParser.parseToUnicode(chat.getMessage()));
 				json.put("chat", chat);
 				session.getBasicRemote().sendText(json.toJSONString());
 			}

@@ -30,7 +30,7 @@
                                     <td><th:block th:text="${post.userId}"/></td>
                                     <td><th:block th:text="${post.datetime}"/></td>
                                     <td><th:block th:text="${post.username}"/></td>
-                                    <td><th:block th:text="${post.message}"/></td>
+                                    <td><th:block th:utext="${commons.article(post.message)}"/></td>
                                 </tr>
                             </th:block>
 

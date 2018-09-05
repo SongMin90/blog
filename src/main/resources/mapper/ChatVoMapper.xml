@@ -12,7 +12,7 @@
 			#{userId,jdbcType=VARCHAR},
 			#{datetime,jdbcType=VARCHAR},
 			#{username,jdbcType=VARCHAR},
-			#{message,jdbcType=VARCHAR}
+			#{message,jdbcType=LONGVARCHAR}
 		)
     </insert>
 

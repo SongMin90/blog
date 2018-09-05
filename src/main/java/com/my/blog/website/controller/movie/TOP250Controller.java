@@ -122,24 +122,24 @@ public class TOP250Controller {
      * 存入电影链接
      * @return
      */
-    @GetMapping(value = "/get/{start}")
-    @ResponseBody
-    public String get(@PathVariable int start) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for(int i=start;i<=177;i++){
-                    try {
-                        getUrl("http://www.ygdy8.net/html/gndy/dyzz/list_23_"+i+".html");
-                    } catch (Exception e) {
-                        new File("C:\\Users\\10444\\Desktop\\aa\\" + i).mkdir();
-                    }
-                }
-            }
-        }).start();
-
-        return "ok";
-    }
+//    @GetMapping(value = "/get/{start}")
+//    @ResponseBody
+//    public String get(@PathVariable int start) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                for(int i=start;i<=177;i++){
+//                    try {
+//                        getUrl("http://www.ygdy8.net/html/gndy/dyzz/list_23_"+i+".html");
+//                    } catch (Exception e) {
+//                        new File("C:\\Users\\10444\\Desktop\\aa\\" + i).mkdir();
+//                    }
+//                }
+//            }
+//        }).start();
+//
+//        return "ok";
+//    }
 
 
     public void  getUrl(String uri) throws Exception {
@@ -173,25 +173,5 @@ public class TOP250Controller {
             Thread.sleep(1000);
         }
     }
-
-//    public void getDownloadUrl(String name, String dyurl) throws IOException {
-//        HttpClient client = HttpClients.createDefault();
-//        HttpGet get = new HttpGet(dyurl);
-//        HttpResponse response=client.execute(get);
-//        String result =EntityUtils.toString(response.getEntity(),"gb2312");
-//        Document doc=Jsoup.parse(result);
-//        Elements elements=doc.select("div#Zoom table tr td a ");
-//        String url = "";
-//        if(elements.get(0).text().equals("磁力链下载点击这里")) {
-//            url = elements.get(1).text();
-//        } else {
-//            url = elements.get(0).text();
-//        }
-//        try {
-//            movieVoMapper.insert(TaleUtils.MD5encode(name + url), name, url, "最新电影");
-//        }catch (Exception e) {
-//            System.out.println("已经存在："+name);
-//        }
-//    }
 
 }
