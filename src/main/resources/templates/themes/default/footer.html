@@ -220,14 +220,14 @@
         document.getElementById("datetime").innerHTML = str;
     }, 100);
 </script>
-<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
-<script src="http://www.gongjuji.net/Content/files/jquery.md5.js"></script>
+<script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
+<script src="https://songm.top/upload/2018/09/sncdgtepqkid9ofu9b8016maap.js"></script>
 <script>
     /*当前在线*/
     var websocket = null;
     //开启连接
     var token = $.md5(returnCitySN["cip"] + navigator.userAgent.toLowerCase());
-    var url = "ws://" + window.location.host  + "/onlineCount/" + token;
+    var url = "wss://" + window.location.host  + "/onlineCount/" + token;
     //判断当前浏览器是否支持WebSocket
     if(websocket == null){
         if('WebSocket' in window){

@@ -50,11 +50,23 @@ public class BaseInterceptor implements HandlerInterceptor {
         LOGGE.info("UserAgent: {}", request.getHeader(USER_AGENT));
         LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, IPKit.getIpAddrByRequest(request));
 
+        // 电影API
+        if(uri.startsWith("/movie/newMovies")) {
+            return true;
+        }
+
         // 拦截IP黑名单
         if(uri.startsWith("/admin/blacklist")) {
             return true;
         }
-        String[] ids = visitorDao.interceptIds();
+        String ip = TerminalUtil.getIp(request);
+        String terminalInfo = TerminalUtil.getTerminalInfo(request);
+        String req_id = TaleUtils.MD5encode(ip + terminalInfo);
+        if(visitorDao.idIsIntercept(req_id) > 0) {
+            request.getRequestDispatcher(request.getContextPath() + "/admin/blacklist").forward(request, response);
+            return false;
+        }
+       /* String[] ids = visitorDao.interceptIds();
         for (String id : ids) {
             String ip = TerminalUtil.getIp(request);
             String terminalInfo = TerminalUtil.getTerminalInfo(request);
@@ -65,7 +77,7 @@ public class BaseInterceptor implements HandlerInterceptor {
                 request.getRequestDispatcher(request.getContextPath() + "/admin/blacklist").forward(request, response);
                 return false;
             }
-        }
+        }*/
 
         // 记录访客信息
         visitorService.save(request);

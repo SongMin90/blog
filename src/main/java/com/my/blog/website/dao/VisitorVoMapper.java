@@ -23,4 +23,11 @@ public interface VisitorVoMapper {
 	String[] interceptIds();
 
 	Long insertOrUpdate(VisitorVo visitorVo);
+
+	/**
+	 * 查询用户是否为黑名单
+	 * @param id
+	 * @return
+	 */
+	long idIsIntercept(@Param("id") String id);
 }

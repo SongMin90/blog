@@ -67,5 +67,9 @@
 		`count` = `count` + 1,
 		`datetime` = NOW()
 	</insert>
+
+	<select id="idIsIntercept" resultType="java.lang.Long" parameterType="String">
+		SELECT count(*) FROM `t_visitor` WHERE intercept=1 and id=#{id,jdbcType=VARCHAR}
+	</select>
     
 </mapper>
