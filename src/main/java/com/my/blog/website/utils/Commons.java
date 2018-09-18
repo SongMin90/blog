@@ -316,11 +316,16 @@ public final class Commons {
     }
 
     /**
-     * 显示文章缩略图，顺序为：文章第一张图 -> 随机获取
+     * 显示文章缩略图，顺序为：文章首图 -> 随机获取
      *
      * @return
      */
     public static String show_thumb(ContentVo contents) {
+        //自动从文中中取出首图
+        String s = show_thumb(contents.getContent());
+        if(!"".equals(s)) {
+            return s;
+        }
         int cid = contents.getCid();
         int size = cid % 20;
         size = size == 0 ? 1 : size;
@@ -423,7 +428,8 @@ public final class Commons {
     public static String show_thumb(String content) {
         content = TaleUtils.mdToHtml(content);
         if (content.contains("<img")) {
-            String img = "";
+            //旧语法，匹配所有img
+            /*String img = "";
             String regEx_img = "<img.*src\\s*=\\s*(.*?)[^>]*?>";
             Pattern p_image = Pattern.compile(regEx_img, Pattern.CASE_INSENSITIVE);
             Matcher m_image = p_image.matcher(content);
@@ -431,6 +437,17 @@ public final class Commons {
                 img = img + "," + m_image.group();
                 // //匹配src
                 Matcher m = Pattern.compile("src\\s*=\\s*\'?\"?(.*?)(\'|\"|>|\\s+)").matcher(img);
+                if (m.find()) {
+                    return m.group(1);
+                }
+            }*/
+            //新语法，匹配alt="首图"的img
+            String regex = "<img.*alt=\"首图\".*?>";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(content);
+            if(matcher.find()) {
+                String group = matcher.group();
+                Matcher m = Pattern.compile("src\\s*=\\s*\'?\"?(.*?)(\'|\"|>|\\s+)").matcher(group);
                 if (m.find()) {
                     return m.group(1);
                 }
