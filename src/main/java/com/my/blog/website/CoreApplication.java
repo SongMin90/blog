@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -29,6 +30,7 @@ import javax.sql.DataSource;
 
 @MapperScan("com.my.blog.website.dao")
 @SpringBootApplication
+@EnableScheduling
 @EnableTransactionManagement
 @Configuration
 public class CoreApplication extends SpringBootServletInitializer {

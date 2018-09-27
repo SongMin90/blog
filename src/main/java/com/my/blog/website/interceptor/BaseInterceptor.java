@@ -66,18 +66,6 @@ public class BaseInterceptor implements HandlerInterceptor {
             request.getRequestDispatcher(request.getContextPath() + "/admin/blacklist").forward(request, response);
             return false;
         }
-       /* String[] ids = visitorDao.interceptIds();
-        for (String id : ids) {
-            String ip = TerminalUtil.getIp(request);
-            String terminalInfo = TerminalUtil.getTerminalInfo(request);
-            String req_id = TaleUtils.MD5encode(ip + terminalInfo);
-            if (req_id.equals(id)) {
-                // 强制控制跳转
-                //response.sendRedirect(request.getContextPath() + "/admin/blacklist");
-                request.getRequestDispatcher(request.getContextPath() + "/admin/blacklist").forward(request, response);
-                return false;
-            }
-        }*/
 
         // 记录访客信息
         visitorService.save(request);
@@ -108,7 +96,8 @@ public class BaseInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) {
-        httpServletRequest.setAttribute("commons", commons);//一些工具类和公共方法
+        //一些工具类和公共方法
+        httpServletRequest.setAttribute("commons", commons);
         httpServletRequest.setAttribute("adminCommons", adminCommons);
     }
 

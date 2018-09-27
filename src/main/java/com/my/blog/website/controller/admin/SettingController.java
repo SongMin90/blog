@@ -30,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -155,9 +156,32 @@ public class SettingController extends BaseController {
                 msg = "上传文件大于1M";
             }
         } catch (Exception e) {
-        	e.printStackTrace();
+            if (e instanceof TipException) {
+                msg = e.getMessage();
+            } else {
+                LOGGER.error(msg, e);
+            }
         }
         return RestResponseBo.fail(msg);
+    }
+
+    /**
+     * 升级
+     * @param webFileURL
+     * @return
+     */
+    @PostMapping(value = "webUpdate")
+    @ResponseBody
+    public RestResponseBo webUpdate(@RequestParam("webFileURL") String webFileURL) {
+        String[] cmds = {"/bin/sh", "-c", "/usr/blog/restart.sh " + webFileURL};
+        try {
+            URL url = new URL(webFileURL);
+            url.openStream();
+            Runtime.getRuntime().exec(cmds);
+            return RestResponseBo.ok();
+        } catch (Exception e) {
+            return RestResponseBo.fail("项目地址有误！");
+        }
     }
 
     /**

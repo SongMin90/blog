@@ -102,7 +102,6 @@ public class ArticleController extends BaseController {
     public RestResponseBo publishArticle(ContentVo contents,  HttpServletRequest request) {
         UserVo users = this.user(request);
         contents.setAuthorId(users.getUid());
-        //contents.setAllowComment(false);
         contents.setType(Types.ARTICLE.getType());
         if (StringUtils.isBlank(contents.getCategories())) {
             contents.setCategories("默认分类");
