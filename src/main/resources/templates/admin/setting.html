@@ -154,7 +154,7 @@
                                 <h3 class="panel-title">更新网站</h3>
                             </div>
                             <div class="panel-body">
-                                <form id="updateFaviconForm" method="post" enctype="multipart/form-data" class="form-inline" role="form">
+                                <form id="updateWebForm" method="post" enctype="multipart/form-data" class="form-inline" role="form">
                                     <div class="form-group col-md-6">
                                         <input id="webFileURL" name="webFileURL" style="width: 100%;" class="form-control" placeholder="请输入项目地址(HTTP)" required="" aria-required="true" type="text"/>
                                     </div>
@@ -299,11 +299,26 @@
 
     //升级网站
     function updateWebSubmit() {
+        var formData = new FormData($('#updateWebForm')[0]);
         var webFileURL = $('#webFileURL').val();
         if(webFileURL == '') {
             tale.alertError('请输入项目URL');
         } else {
-
+            $.ajax({
+                url: '/admin/setting/webUpdate',
+                type: 'post',
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function (result) {
+                    if(result && result.success){
+                        tale.alertOk('升级成功!');
+                    } else {
+                        tale.alertError(result.msg || '升级失败');
+                    }
+                }
+            });
         }
     }
     
