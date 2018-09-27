@@ -20,6 +20,17 @@
     <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
     <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <!-- jQuery cookie操作插件 -->
+    <script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+    <!-- 根据ip和终端信息储存userId到cookie中 -->
+    <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
+    <script src="https://songm.top/upload/2018/09/sncdgtepqkid9ofu9b8016maap.js"></script>
+    <script>
+        var token = $.md5(returnCitySN["cip"] + navigator.userAgent.toLowerCase());
+        $.cookie('userId', token, { expires: 1 }); // 存储一个带1天期限的 cookie
+    </script>
 </head>
 <body  gtools_scp_screen_capture_injected="true" th:class="${is_post}?'':'bg-grey'">
 <!--[if lt IE 8]>

@@ -87,13 +87,19 @@ public class ChatWebSocket {
     @OnClose
     public void onClose() {
         // 取出用户昵称
-        String username = users.get(userId).getUsername();
+        String username = null;
+        User user = users.get(userId);
+        if (user != null) {
+            username = user.getUsername();
+        }
         // 移除此用户
         users.remove(userId);
         // 发送用户数
         sendOnlineCount();
         // 发送通知
-        sendNotice("\"" + username + "\"退出聊天");
+        if (username != null) {
+            sendNotice("\"" + username + "\"退出聊天");
+        }
     }
 
     /**
@@ -128,7 +134,7 @@ public class ChatWebSocket {
      */
     @OnError
     public void onError(Throwable e) {
-        LOGGER.error(e.getMessage(), e);
+        // LOGGER.error(e.getMessage(), e);
     }
 
     /**
@@ -142,7 +148,7 @@ public class ChatWebSocket {
                 session.getBasicRemote().sendText(EmojiParser.parseToUnicode(message));
             }
         } catch (IOException e) {
-            LOGGER.error(e.getMessage(), e);
+            //LOGGER.error(e.getMessage(), e);
         }
     }
 

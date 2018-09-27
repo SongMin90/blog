@@ -1,6 +1,8 @@
 package com.my.blog.website.websocket;
 
 import com.alibaba.fastjson.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -11,18 +13,29 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 统计在线人数
+ *
+ * @author SongM
+ * @date 2017/05/25
  */
 @ServerEndpoint(value = "/onlineCount/{userId}")
 @Component
 public class GetOnlineCount {
 
-	//json
+	private static final Logger LOGGER = LoggerFactory.getLogger(GetOnlineCount.class);
+
+	/**
+	 * json
+	 */
 	private JSONObject json = null;
 
-	// 储存用户
+	/**
+	 * 储存用户
+	 */
 	private static ConcurrentHashMap<String, Session> users = new ConcurrentHashMap();
 
-	//用户token
+	/**
+	 * 用户token
+	 */
 	private String userId;
 
 	/**
@@ -31,8 +44,10 @@ public class GetOnlineCount {
 	@OnOpen
 	public void onOpen(Session session, @PathParam("userId") String userId) {
 		this.userId = userId;
-		users.put(userId, session); //存入用户
-		sendOnlineCount(); // 发送用户数
+		// 存入用户
+		users.put(userId, session);
+		// 发送用户数
+		sendOnlineCount();
 	}
 
 	/**
@@ -40,8 +55,10 @@ public class GetOnlineCount {
 	 */
 	@OnClose
 	public void onClose() {
-		users.remove(userId); // 移除此用户
-		sendOnlineCount(); // 发送用户数
+		// 移除此用户
+		users.remove(userId);
+		// 发送用户数
+		sendOnlineCount();
 	}
 
 	/**
@@ -49,8 +66,8 @@ public class GetOnlineCount {
 	 * 
 	 */
 	@OnError
-	public void onError(Throwable error) {
-		error.printStackTrace();
+	public void onError(Throwable e) {
+		// LOGGER.error(e.getMessage(), e);
 	}
 
 	/**
@@ -63,7 +80,7 @@ public class GetOnlineCount {
 				session.getBasicRemote().sendText(message);
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			//LOGGER.error(e.getMessage(), e);
 		}
 	}
 	

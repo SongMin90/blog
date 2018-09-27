@@ -175,8 +175,8 @@ public class SettingController extends BaseController {
     public RestResponseBo webUpdate(@RequestParam("webFileURL") String webFileURL) {
         String[] cmds = {"/bin/sh", "-c", "/usr/blog/restart.sh " + webFileURL};
         try {
-            URL url = new URL(webFileURL);
-            url.openStream();
+            /*URL url = new URL(webFileURL);
+            url.openStream();*/
             Runtime.getRuntime().exec(cmds);
             return RestResponseBo.ok();
         } catch (Exception e) {
