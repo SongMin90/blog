@@ -20,6 +20,8 @@ import javax.servlet.http.HttpSession;
 import javax.sql.DataSource;
 import java.awt.*;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.Normalizer;
@@ -504,4 +506,53 @@ public class TaleUtils {
     	return TaleUtils.class.getProtectionDomain().getCodeSource().getLocation().getPath()
     			+ "//static//admin//images//favicon.png";
     }
+
+    /**
+     * 解密钥，失败返回true
+     * @param token
+     * @return
+     */
+    public static boolean checkToken(String token) {
+        if("songm_token".equals(token)) {
+            return false;
+        }
+        return true;
+    }
+
+    public static String httpRequest(String uri) {
+        String body = null;
+        HttpURLConnection conn = null;
+        try {
+            URL url = new URL(uri);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            int code = conn.getResponseCode();
+            if (code == 200) {
+                InputStream in = conn.getInputStream();
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                byte[] b = new byte[1024];
+                int len = -1;
+                try {
+                    while ((len = in.read(b)) != -1) {
+                        bos.write(b, 0, len);
+                    }
+                    body = new String(bos.toByteArray(), "UTF-8");
+                } finally {
+                    if (bos != null) {
+                        bos.close();
+                    }
+                    if (in != null) {
+                        in.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            conn.disconnect();
+        }
+        return body;
+    }
+
 }

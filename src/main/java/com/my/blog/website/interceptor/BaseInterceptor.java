@@ -50,8 +50,8 @@ public class BaseInterceptor implements HandlerInterceptor {
         LOGGE.info("UserAgent: {}", request.getHeader(USER_AGENT));
         LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, IPKit.getIpAddrByRequest(request));
 
-        // 电影API
-        if(uri.startsWith("/movie/newMovies")) {
+        // 电影API|豆瓣API
+        if(uri.startsWith("/movie/newMovies") || uri.startsWith("/douban/")) {
             return true;
         }
 

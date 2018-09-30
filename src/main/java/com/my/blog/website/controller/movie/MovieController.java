@@ -3,15 +3,15 @@ package com.my.blog.website.controller.movie;
 import com.alibaba.fastjson.JSONObject;
 import com.my.blog.website.dao.MovieVoMapper;
 import com.my.blog.website.modal.Vo.MovieVo;
+import com.my.blog.website.utils.TaleUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
 
+/**
+ * 阳光电影
+ */
 @RestController
 @RequestMapping("/movie")
 public class MovieController {
@@ -20,41 +20,6 @@ public class MovieController {
 
     @Resource
     private MovieVoMapper movieVoMapper;
-
-    private void getData(String u) {
-        try {
-            URL url = new URL(u);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            int code = conn.getResponseCode();
-            if(code == 200) {
-                InputStream in = conn.getInputStream();
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                byte[] b = new byte[1024];
-                int len = -1;
-                while ((len = in.read(b)) != -1) {
-                    bos.write(b, 0, len);
-                }
-                String body = new String(bos.toByteArray(), "UTF-8");
-                json = JSONObject.parseObject(body);
-                bos.close();
-            }
-        } catch (Exception e) {
-
-        }
-    }
-
-    /**
-     * 解密钥，失败返回true
-     * @param token
-     * @return
-     */
-    private boolean checkToken(String token) {
-        if("songm_token".equals(token)) {
-            return false;
-        }
-        return true;
-    }
 
     /**
      * 获取电影数据
@@ -73,7 +38,7 @@ public class MovieController {
         json.clear();
 
         //验证token
-        if(checkToken(token)) {
+        if(TaleUtils.checkToken(token)) {
             json.put("state", 0);
             json.put("msg", "token error!");
             return json;

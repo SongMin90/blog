@@ -170,6 +170,13 @@
 			<version>1.7.2</version>
 		</dependency>
 
+		<!-- lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.16.10</version>
+		</dependency>
+
 	</dependencies>
 
 	<!-- 普通的maven打包方式 -->
