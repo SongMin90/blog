@@ -3,6 +3,10 @@ package com.my.blog.website.dao;
 import com.my.blog.website.modal.douban.*;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * DouBanDao
@@ -26,7 +30,7 @@ public interface DouBanDao {
             "INSERT INTO `d_rating` " +
             "(`id`, `max`, `average`, `stars`, `min`) " +
             "VALUES " +
-            "(#{id,jdbcType=VARCHAR}, #{max,jdbcType=INTEGER}, #{average,jdbcType=INTEGER}, #{stars,jdbcType=VARCHAR}, #{min,jdbcType=INTEGER}) " +
+            "(#{id,jdbcType=VARCHAR}, #{max,jdbcType=INTEGER}, #{average,jdbcType=VARCHAR}, #{stars,jdbcType=VARCHAR}, #{min,jdbcType=INTEGER}) " +
              "ON DUPLICATE KEY UPDATE `max`=#{max,jdbcType=INTEGER}, `average`=#{average,jdbcType=INTEGER}, `stars`=#{stars,jdbcType=VARCHAR}, `min`=#{min,jdbcType=INTEGER}"
     )
     int insertRating(Rating rating);
@@ -67,4 +71,23 @@ public interface DouBanDao {
     )
     int insertAvatar(Avatar avatar);
 
+    @Select(
+            "SELECT " +
+            "s.id," +
+            "s.title," +
+            "s.genres," +
+            "s.alt," +
+            "i.`medium` \"image.medium\"," +
+            "r.average \"rating.average\" " +
+            "FROM " +
+            "`d_subject` s," +
+            "`d_image` i," +
+            "`d_rating` r " +
+            "WHERE " +
+            "s.id = i.id " +
+            "AND s.id = r.id " +
+            "AND s.version = (SELECT max(version) FROM `d_subject`) " +
+            "AND s.type = #{type,jdbcType=VARCHAR}"
+    )
+    List<Subject> findByType(@Param("type") String type);
 }

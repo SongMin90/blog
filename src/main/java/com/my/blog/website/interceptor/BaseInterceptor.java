@@ -50,8 +50,14 @@ public class BaseInterceptor implements HandlerInterceptor {
         LOGGE.info("UserAgent: {}", request.getHeader(USER_AGENT));
         LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, IPKit.getIpAddrByRequest(request));
 
-        // 电影API|豆瓣API
-        if(uri.startsWith("/movie/newMovies") || uri.startsWith("/douban/")) {
+        // 攻击重定向
+        if(uri.startsWith("/robots.txt")) {
+            request.getRequestDispatcher(request.getContextPath() + "/user/robots.txt").forward(request, response);
+            return false;
+        }
+
+        // 电影API
+        if(uri.startsWith("/movie/newMovies")) {
             return true;
         }
 
@@ -70,12 +76,12 @@ public class BaseInterceptor implements HandlerInterceptor {
         // 记录访客信息
         visitorService.save(request);
 
-        //请求拦截处理
+        // 请求拦截处理
         UserVo user = TaleUtils.getLoginUser(request);
         if (null == user) {
             Integer uid = TaleUtils.getCookieUid(request);
             if (null != uid) {
-                //这里还是有安全隐患,cookie是可以伪造的
+                // 这里还是有安全隐患,cookie是可以伪造的
                 user = userService.queryUserById(uid);
                 request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY, user);
             }
@@ -84,7 +90,7 @@ public class BaseInterceptor implements HandlerInterceptor {
             response.sendRedirect(request.getContextPath() + "/admin/login");
             return false;
         }
-        //设置get请求的token
+        // 设置get请求的token
         if (request.getMethod().equals("GET")) {
             String csrf_token = UUID.UU64();
             // 默认存储30分钟
@@ -96,7 +102,7 @@ public class BaseInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) {
-        //一些工具类和公共方法
+        // 一些工具类和公共方法
         httpServletRequest.setAttribute("commons", commons);
         httpServletRequest.setAttribute("adminCommons", adminCommons);
     }

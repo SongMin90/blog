@@ -1,6 +1,8 @@
 package com.my.blog.website.modal.douban;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -14,6 +16,8 @@ import java.util.List;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Subject implements Serializable {
 
     private String id;
@@ -48,4 +52,5 @@ public class Subject implements Serializable {
         this.genres = genres;
         this.type = type;
     }
+
 }
