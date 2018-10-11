@@ -1,5 +1,6 @@
 package com.my.blog.website.dao;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -30,4 +31,6 @@ public interface VisitorVoMapper {
 	 * @return
 	 */
 	long idIsIntercept(@Param("id") String id);
+
+    void visitorsStatistics(HashMap<String, Object> map);
 }

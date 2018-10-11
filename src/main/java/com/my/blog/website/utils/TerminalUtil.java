@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -48,8 +50,23 @@ public class TerminalUtil {
 		}
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getRemoteAddr();
+			if (ip.equals("127.0.0.1") || ip.equals("0:0:0:0:0:0:0:1")) {
+				// 根据网卡取本机配置的IP
+				InetAddress inet = null;
+				try {
+					inet = InetAddress.getLocalHost();
+				} catch (UnknownHostException e) {}
+				ip = inet.getHostAddress();
+			}
 		}
-		return ip.equals("0:0:0:0:0:0:0:1")?"127.0.0.1":ip;
+		// 对于通过多个代理的情况，第一个IP为客户端真实IP,多个IP按照','分割
+		// "***.***.***.***".length() = 15
+		if (ip != null && ip.length() > 15) {
+			if (ip.indexOf(",") > 0) {
+				ip = ip.substring(0, ip.indexOf(","));
+			}
+		}
+		return ip;
 	}
 
 	/**

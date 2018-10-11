@@ -2,6 +2,7 @@ package com.my.blog.website.service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.my.blog.website.modal.Vo.VisitorVo;
 
@@ -32,4 +33,11 @@ public interface VisitorService {
 	 * @return
 	 */
 	VisitorVo interceptById(String id);
+
+	/**
+	 * 统计时间段访客
+	 * @param type
+	 * @return
+	 */
+    JSONObject visitorsStatistics(int type);
 }

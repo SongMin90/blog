@@ -1,5 +1,6 @@
 package com.my.blog.website.controller.admin;
 
+import com.alibaba.fastjson.JSONObject;
 import com.my.blog.website.modal.Vo.*;
 import com.my.blog.website.service.*;
 import com.github.pagehelper.PageInfo;
@@ -170,6 +171,18 @@ public class IndexController extends BaseController {
         PageInfo<VisitorVo> visitorsPaginator = visitorService.getVisitorsWithpage(page, limit);
         request.setAttribute("visitors", visitorsPaginator);
     	return "admin/visitor_list";
+    }
+
+    /**
+     * 统计时间段访客
+     * @param type
+     * @return
+     */
+    @GetMapping(value = "/visitors/statistics")
+    @ResponseBody
+    public RestResponseBo<String> visitorsStatistics(@RequestParam(value = "type", required = true) int type) {
+        JSONObject json = visitorService.visitorsStatistics(type);
+        return RestResponseBo.ok(json);
     }
 
     /**

@@ -71,5 +71,13 @@
 	<select id="idIsIntercept" resultType="java.lang.Long" parameterType="String">
 		SELECT count(*) FROM `t_visitor` WHERE intercept=1 and id=#{id,jdbcType=VARCHAR}
 	</select>
+
+	<select id="visitorsStatistics" statementType="CALLABLE">
+		call proc_visitors_statistics (
+			#{p_count, jdbcType = INTEGER, mode = IN },
+			#{p_data, jdbcType = VARCHAR, mode = OUT },
+			#{p_labels, jdbcType = VARCHAR, mode = OUT }
+		)
+	</select>
     
 </mapper>

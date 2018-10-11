@@ -48,7 +48,7 @@ public class BaseInterceptor implements HandlerInterceptor {
         String uri = request.getRequestURI();
 
         LOGGE.info("UserAgent: {}", request.getHeader(USER_AGENT));
-        LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, IPKit.getIpAddrByRequest(request));
+        LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, TerminalUtil.getIp(request));
 
         // 攻击重定向
         if(uri.startsWith("/robots.txt")) {

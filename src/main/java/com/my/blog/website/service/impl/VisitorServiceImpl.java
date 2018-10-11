@@ -1,11 +1,11 @@
 package com.my.blog.website.service.impl;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import com.alibaba.fastjson.JSONObject;
 import com.my.blog.website.utils.AddressUtils;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,8 @@ import com.my.blog.website.modal.Vo.VisitorVo;
 import com.my.blog.website.service.VisitorService;
 import com.my.blog.website.utils.TaleUtils;
 import com.my.blog.website.utils.TerminalUtil;
+
+import org.apache.commons.collections.MapUtils;
 
 @Service
 public class VisitorServiceImpl implements VisitorService {
@@ -65,6 +67,34 @@ public class VisitorServiceImpl implements VisitorService {
 		// 更新
 		visitorDao.updateById(visitorVo);
 		return visitorVo;
+	}
+
+	@Override
+	public JSONObject visitorsStatistics(int type) {
+		JSONObject json = new JSONObject();
+		HashMap<String, Object> map = new HashMap<>();
+		map.put("p_data", "");
+		map.put("p_labels", "");
+		// 判断type，0为最近7天，1为最近15天，2为最近30天
+		if (type == 0) {
+			map.put("p_count", 7);
+		} else if (type == 1) {
+			map.put("p_count", 15);
+		} else if (type == 2) {
+			map.put("p_count", 30);
+		}
+		// 执行存储过程
+		try {
+			visitorDao.visitorsStatistics(map);
+		} catch (Exception e) {}
+		// 获取数据
+		String data = MapUtils.getString(map, "p_data", "[]");
+        json.put("data", data.split(","));
+
+		String labels = MapUtils.getString(map, "p_labels", "[]");
+        json.put("labels", labels.split(","));
+
+        return json;
 	}
 
 }

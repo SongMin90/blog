@@ -32,12 +32,12 @@ public class DouBanTask {
     //@Scheduled(fixedRate = 1000000)
     @Scheduled(cron = "0 0 12 * * ?")
     public void print() {
-        LOGGER.info("----------------------- Task：DouBanTask Is Start -------------------------------");
+        LOGGER.info("----------------------- Task:DouBanTask Is Start -------------------------------");
         insertMovie("https://api.douban.com/v2/movie/in_theaters?count=100&city=深圳", "in_theaters");
         insertMovie("https://api.douban.com/v2/movie/top250?count=100&start=0", "top250");
         insertMovie("https://api.douban.com/v2/movie/top250?count=100&start=100", "top250");
         insertMovie("https://api.douban.com/v2/movie/top250?count=100&start=200", "top250");
-        LOGGER.info("----------------------- Task：DouBanTask Is End -------------------------------");
+        LOGGER.info("----------------------- Task:DouBanTask Is End -------------------------------");
     }
 
     /**
