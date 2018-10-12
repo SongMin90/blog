@@ -17,7 +17,7 @@ public interface VisitorService {
 	 * 添加访客信息
 	 * @param request
 	 */
-	void save(HttpServletRequest request);
+	void save(HttpServletRequest request, String id, String ip, String terminalInfo);
 
 	/**
 	 * 分页查询所有访客信息

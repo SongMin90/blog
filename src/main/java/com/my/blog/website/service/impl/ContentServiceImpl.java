@@ -12,6 +12,7 @@ import com.my.blog.website.service.IContentService;
 import com.my.blog.website.service.IMetaService;
 import com.my.blog.website.service.IRelationshipService;
 import com.my.blog.website.utils.DateKit;
+import com.my.blog.website.utils.MapCache;
 import com.my.blog.website.utils.TaleUtils;
 import com.my.blog.website.utils.Tools;
 import com.vdurmont.emoji.EmojiParser;
@@ -102,7 +103,14 @@ public class ContentServiceImpl implements IContentService {
         example.setOrderByClause("created desc");
         example.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusEqualTo(Types.PUBLISH.getType());
         PageHelper.startPage(p, limit);
-        List<ContentVo> data = contentDao.selectByExampleWithBLOBs(example);
+        // 从缓存取
+        List<ContentVo> data = MapCache.single().get("indexDate");
+        if (data == null) {
+            // 读数据库
+            data = contentDao.selectByExampleWithBLOBs(example);
+            // 存7天
+            MapCache.single().set("indexDate", data,3600 * 24 * 7);
+        }
         PageInfo<ContentVo> pageInfo = new PageInfo<>(data);
         LOGGER.debug("Exit getContents method");
         return pageInfo;

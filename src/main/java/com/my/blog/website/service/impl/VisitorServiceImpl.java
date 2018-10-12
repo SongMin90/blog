@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.alibaba.fastjson.JSONObject;
 import com.my.blog.website.utils.AddressUtils;
+import com.my.blog.website.utils.MapCache;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageHelper;
@@ -14,8 +15,6 @@ import com.github.pagehelper.PageInfo;
 import com.my.blog.website.dao.VisitorVoMapper;
 import com.my.blog.website.modal.Vo.VisitorVo;
 import com.my.blog.website.service.VisitorService;
-import com.my.blog.website.utils.TaleUtils;
-import com.my.blog.website.utils.TerminalUtil;
 
 import org.apache.commons.collections.MapUtils;
 
@@ -26,23 +25,20 @@ public class VisitorServiceImpl implements VisitorService {
 	private VisitorVoMapper visitorDao;
 	
 	@Override
-	public void save(HttpServletRequest request) {
+	public void save(HttpServletRequest request, String id, String ip, String terminalInfo) {
 		//request.getSession(false)==null可以近似的判断是否过期：如果已经过期，那么返回的是null，但是当起一次请求，刚刚建立一个session的时候，上述方法也返回null
 		//所以应该这个做
 		if(null == request.getSession(false)) {
 			if(true == request.getSession(true).isNew()) {
 				// 取到访客信息
-				String ip = TerminalUtil.getIp(request);
 				String addr = AddressUtils.getIpAddress(ip);
-				String terminal = TerminalUtil.getTerminalInfo(request);
 				Date datetime = new Date();
-				String id = TaleUtils.MD5encode(ip + terminal);
 				// 信息存入bean
 				VisitorVo visitorVo = new VisitorVo();
 				visitorVo.setId(id);
 				visitorVo.setIp(ip);
 				visitorVo.setAddr(addr);
-				visitorVo.setTerminal(terminal);
+				visitorVo.setTerminal(terminalInfo);
 				visitorVo.setDatetime(datetime);
 				// insertOrUpdate
 				visitorDao.insertOrUpdate(visitorVo);
@@ -66,6 +62,8 @@ public class VisitorServiceImpl implements VisitorService {
 		visitorVo.setIntercept(isIntercept);
 		// 更新
 		visitorDao.updateById(visitorVo);
+		// 删除缓存
+		MapCache.single().del(id);
 		return visitorVo;
 	}
 

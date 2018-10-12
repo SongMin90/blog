@@ -14,6 +14,7 @@ import com.my.blog.website.modal.Vo.UserVo;
 import com.my.blog.website.service.IContentService;
 import com.my.blog.website.service.ILogService;
 import com.my.blog.website.service.IMetaService;
+import com.my.blog.website.utils.MapCache;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +109,9 @@ public class ArticleController extends BaseController {
         }
         try {
             contentsService.publish(contents);
+
+            // 删除缓存
+            MapCache.single().del("indexDate");
         } catch (Exception e) {
             String msg = "文章发布失败";
             if (e instanceof TipException) {
@@ -135,6 +139,9 @@ public class ArticleController extends BaseController {
         contents.setType(Types.ARTICLE.getType());
         try {
             contentsService.updateArticle(contents);
+
+            // 删除缓存
+            MapCache.single().del("indexDate");
         } catch (Exception e) {
             String msg = "文章编辑失败";
             if (e instanceof TipException) {
@@ -160,6 +167,9 @@ public class ArticleController extends BaseController {
         try {
             contentsService.deleteByCid(cid);
             logService.insertLog(LogActions.DEL_ARTICLE.getAction(), cid+"", request.getRemoteAddr(), this.getUid(request));
+
+            // 删除缓存
+            MapCache.single().del("indexDate");
         } catch (Exception e) {
             String msg = "文章删除失败";
             if (e instanceof TipException) {

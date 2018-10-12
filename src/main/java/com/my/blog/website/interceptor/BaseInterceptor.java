@@ -68,13 +68,22 @@ public class BaseInterceptor implements HandlerInterceptor {
         String ip = TerminalUtil.getIp(request);
         String terminalInfo = TerminalUtil.getTerminalInfo(request);
         String req_id = TaleUtils.MD5encode(ip + terminalInfo);
-        if(visitorDao.idIsIntercept(req_id) > 0) {
+        // 从缓存取
+        Long isIntercept = MapCache.single().get(req_id);
+        if (isIntercept == null) {
+            // 读数据库
+            isIntercept = visitorDao.idIsIntercept(req_id);
+            // 存7天
+            MapCache.single().set(req_id, isIntercept,3600 * 24 * 7);
+        }
+        // 判断是否拦截
+        if(isIntercept > 0) {
             request.getRequestDispatcher(request.getContextPath() + "/admin/blacklist").forward(request, response);
             return false;
         }
 
         // 记录访客信息
-        visitorService.save(request);
+        visitorService.save(request, req_id, ip, terminalInfo);
 
         // 请求拦截处理
         UserVo user = TaleUtils.getLoginUser(request);
