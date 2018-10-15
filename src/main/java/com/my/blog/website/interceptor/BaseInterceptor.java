@@ -47,6 +47,11 @@ public class BaseInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object o) throws Exception {
         String uri = request.getRequestURI();
 
+        // 系统信息
+        if(uri.startsWith("/admin/system/serverinfo") || uri.startsWith("/admin/system/memory") || uri.startsWith("/admin/system/cpuInfos") || uri.startsWith("/admin/system/diskInfos")) {
+            return true;
+        }
+
         LOGGE.info("UserAgent: {}", request.getHeader(USER_AGENT));
         LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, TerminalUtil.getIp(request));
 

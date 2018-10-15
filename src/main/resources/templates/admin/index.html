@@ -9,7 +9,31 @@
             <div class="container">
                 <div class="row">
                     <div class="col-sm-12">
-                        <h4 class="page-title">仪表盘</h4>
+                        <h4 class="page-title">
+                            仪表盘
+                            <!-- 按钮触发模态框 -->
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">服务器信息</button>
+                            <!-- 模态框（Modal） -->
+                            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" style="width: 60%">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">× </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            ---------------------服务器信息--------------------------
+                                            <div id="system-info-1"></div>
+                                            ---------------------内存信息--------------------------
+                                            <div id="system-info-2"></div>
+                                            ---------------------CPU信息--------------------------
+                                            <div id="system-info-3"></div>
+                                            ---------------------磁盘信息--------------------------
+                                            <div id="system-info-4"></div>
+                                        </div>
+                                    </div><!-- /.modal-content -->
+                                </div><!-- /.modal-dialog -->
+                            </div><!-- /.modal -->
+                        </h4>
                     </div>
 
                     <div class="row">
@@ -144,5 +168,6 @@
     </div>
 </div>
 <div th:replace="admin/footer :: footer"></div>
+<script th:src="@{/admin/js/systemInfo.js}"></script>
 </body>
 </html>

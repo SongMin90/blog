@@ -86,6 +86,10 @@
           <element id="library" level="project" name="Maven: org.apache.httpcomponents:httpcore:4.4.6" />
           <element id="library" level="project" name="Maven: commons-codec:commons-codec:1.10" />
           <element id="library" level="project" name="Maven: org.jsoup:jsoup:1.7.2" />
+          <element id="library" level="project" name="Maven: org.projectlombok:lombok:1.16.10" />
+          <element id="library" level="project" name="Maven: commons-collections:commons-collections:3.2" />
+          <element id="library" level="project" name="Maven: org.fusesource:sigar:1.6.4" />
+          <element id="library" level="project" name="Maven: log4j:log4j:1.2.15" />
         </element>
       </element>
       <element id="directory" name="META-INF">

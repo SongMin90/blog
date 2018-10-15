@@ -183,6 +183,13 @@
 			<version>3.2</version>
 		</dependency>
 
+		<!-- sigar -->
+		<dependency>
+			<groupId>org.fusesource</groupId>
+			<artifactId>sigar</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+
 	</dependencies>
 
 	<!-- 普通的maven打包方式 -->
