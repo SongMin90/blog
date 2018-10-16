@@ -7,8 +7,6 @@ import com.my.blog.website.service.VisitorService;
 import com.my.blog.website.utils.*;
 import com.my.blog.website.constant.WebConst;
 import com.my.blog.website.dto.Types;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,12 +17,14 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * 自定义拦截器
- * Created by BlueT on 2017/3/9.
+ *
+ * @author SongM
+ * @date 2017/3/9
  */
 @Component
 public class BaseInterceptor implements HandlerInterceptor {
-    private static final Logger LOGGE = LoggerFactory.getLogger(BaseInterceptor.class);
-    private static final String USER_AGENT = "user-agent";
+//    private static final Logger LOGGE = LoggerFactory.getLogger(BaseInterceptor.class);
+//    private static final String USER_AGENT = "user-agent";
 
     @Resource
     private IUserService userService;
@@ -48,12 +48,12 @@ public class BaseInterceptor implements HandlerInterceptor {
         String uri = request.getRequestURI();
 
         // 系统信息
-        if(uri.startsWith("/admin/system/serverinfo") || uri.startsWith("/admin/system/memory") || uri.startsWith("/admin/system/cpuInfos") || uri.startsWith("/admin/system/diskInfos")) {
-            return true;
-        }
+//        if(uri.startsWith("/admin/system/serverinfo") || uri.startsWith("/admin/system/memory") || uri.startsWith("/admin/system/cpuInfos") || uri.startsWith("/admin/system/diskInfos")) {
+//            return true;
+//        }
 
-        LOGGE.info("UserAgent: {}", request.getHeader(USER_AGENT));
-        LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, TerminalUtil.getIp(request));
+//        LOGGE.info("UserAgent: {}", request.getHeader(USER_AGENT));
+//        LOGGE.info("用户访问地址: {}, 来路地址: {}", uri, TerminalUtil.getIp(request));
 
         // 攻击重定向
         if(uri.startsWith("/robots.txt")) {
