@@ -69,8 +69,8 @@ public class CoreApplication extends SpringBootServletInitializer {
 	@Bean
 	public MultipartConfigElement multipartConfigElement() {
 		MultipartConfigFactory factory = new MultipartConfigFactory();
-		// 文件最大
-		factory.setMaxFileSize(WebConst.MAX_FILE_SIZE + "MB"); //KB,MB
+		// 文件最大 KB,MB
+		factory.setMaxFileSize(WebConst.MAX_FILE_SIZE + "MB");
 		// 设置总上传数据总大小
 		factory.setMaxRequestSize(WebConst.MAX_FILE_SIZE + "MB");
 		return factory.createMultipartConfig();

@@ -11,10 +11,8 @@ import com.my.blog.website.exception.TipException;
 import com.my.blog.website.modal.Bo.RestResponseBo;
 import com.my.blog.website.modal.Bo.StatisticsBo;
 import com.my.blog.website.utils.GsonUtils;
-import com.my.blog.website.utils.SystemInfo;
 import com.my.blog.website.utils.TaleUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.hyperic.sigar.Sigar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -270,32 +268,32 @@ public class IndexController extends BaseController {
         return RestResponseBo.ok();
     }
 
-    /**
-     * 获取系统信息
-     * @param type
-     * @return
-     */
-    @GetMapping(value = "/system/{type}")
-    @ResponseBody
-    public RestResponseBo systemInfo(@PathVariable String type) {
-        Object body = new Object();
-        if (type.equals("serverinfo")) {
-            body = SystemInfo.SystemProperty();
-        } else if (type.equals("memory")) {
-            body = SystemInfo.memory(new Sigar());
-        } else if (type.equals("cpuInfos")) {
-            body = SystemInfo.cpuInfos(new Sigar());
-        } else if (type.equals("diskInfos")) {
-            body = SystemInfo.diskInfos(new Sigar());
-        } else if (type.equals("all")) {
-            body = new JSONObject();
-            ((JSONObject) body).put("serverinfo", SystemInfo.SystemProperty());
-            Sigar sigar = new Sigar();
-            ((JSONObject) body).put("memory", SystemInfo.memory(sigar));
-            ((JSONObject) body).put("cpuInfos", SystemInfo.cpuInfos(sigar));
-            ((JSONObject) body).put("diskInfos", SystemInfo.diskInfos(sigar));
-        }
-        return RestResponseBo.ok(body);
-    }
-    
+//    /**
+//     * 获取系统信息
+//     * @param type
+//     * @return
+//     */
+//    @GetMapping(value = "/system/{type}")
+//    @ResponseBody
+//    public RestResponseBo systemInfo(@PathVariable String type) {
+//        Object body = new Object();
+//        if (type.equals("serverinfo")) {
+//            body = SystemInfo.SystemProperty();
+//        } else if (type.equals("memory")) {
+//            body = SystemInfo.memory(new Sigar());
+//        } else if (type.equals("cpuInfos")) {
+//            body = SystemInfo.cpuInfos(new Sigar());
+//        } else if (type.equals("diskInfos")) {
+//            body = SystemInfo.diskInfos(new Sigar());
+//        } else if (type.equals("all")) {
+//            body = new JSONObject();
+//            ((JSONObject) body).put("serverinfo", SystemInfo.SystemProperty());
+//            Sigar sigar = new Sigar();
+//            ((JSONObject) body).put("memory", SystemInfo.memory(sigar));
+//            ((JSONObject) body).put("cpuInfos", SystemInfo.cpuInfos(sigar));
+//            ((JSONObject) body).put("diskInfos", SystemInfo.diskInfos(sigar));
+//        }
+//        return RestResponseBo.ok(body);
+//    }
+
 }

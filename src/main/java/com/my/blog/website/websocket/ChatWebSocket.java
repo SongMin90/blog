@@ -145,7 +145,9 @@ public class ChatWebSocket {
             for (String key : users.keySet()) {
                 User user = users.get(key);
                 Session session = user.getSession();
-                session.getBasicRemote().sendText(EmojiParser.parseToUnicode(message));
+                if (session.isOpen()) {
+                    session.getBasicRemote().sendText(EmojiParser.parseToUnicode(message));
+                }
             }
         } catch (IOException e) {
             //LOGGER.error(e.getMessage(), e);
@@ -199,7 +201,9 @@ public class ChatWebSocket {
                 }
                 chat.setMessage(EmojiParser.parseToUnicode(chat.getMessage()));
                 json.put("chat", chat);
-                session.getBasicRemote().sendText(json.toJSONString());
+                if (session.isOpen()) {
+                    session.getBasicRemote().sendText(json.toJSONString());
+                }
             }
         } catch (IOException e) {
             LOGGER.error(e.getMessage(), e);

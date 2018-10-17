@@ -77,7 +77,9 @@ public class GetOnlineCount {
 		try {
 			for (String key : users.keySet()) {
 				Session session = users.get(key);
-				session.getBasicRemote().sendText(message);
+				if (session.isOpen()) {
+					session.getBasicRemote().sendText(message);
+				}
 			}
 		} catch (IOException e) {
 			//LOGGER.error(e.getMessage(), e);

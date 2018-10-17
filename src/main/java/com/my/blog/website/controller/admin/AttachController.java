@@ -17,21 +17,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.nio.channels.FileChannel;
+
+import static com.alibaba.fastjson.util.IOUtils.close;
 
 /**
  * 附件管理
- *
+ * <p>
  * Created by 13 on 2017/2/21.
  */
 @Controller
@@ -84,12 +82,15 @@ public class AttachController extends BaseController {
                 if (multipartFile.getSize() <= (WebConst.MAX_FILE_SIZE * 1048576)) {
                     String fkey = TaleUtils.getFileKey(fname);
                     String ftype = TaleUtils.isImage(multipartFile.getInputStream()) ? Types.IMAGE.getType() : Types.FILE.getType();
-                    File file = new File(CLASSPATH+fkey);
-                    try {
-                        FileCopyUtils.copy(multipartFile.getInputStream(),new FileOutputStream(file));
+                    File file = new File(CLASSPATH + fkey);
+                    // 太慢了
+                    /*try {
+                        FileCopyUtils.copy(multipartFile.getInputStream(), new FileOutputStream(file));
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
+                    }*/
+
+                    nioTransferCopy(multipartFile.getInputStream(), file);
                     attachService.save(fname, fkey, ftype, uid);
                 } else {
                     return RestResponseBo.fail("文件需小于" + WebConst.MAX_FILE_SIZE + "M");
@@ -102,7 +103,32 @@ public class AttachController extends BaseController {
     }
 
     /**
+     * 拷贝文件
+     * @param inStream
+     * @param target
+     */
+    private void nioTransferCopy(InputStream inStream, File target) {
+        FileChannel in = null;
+        FileChannel out = null;
+        FileOutputStream outStream = null;
+        try {
+            outStream = new FileOutputStream(target);
+            in = ((FileInputStream) inStream).getChannel();
+            out = outStream.getChannel();
+            in.transferTo(0, in.size(), out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            close(inStream);
+            close(in);
+            close(outStream);
+            close(out);
+        }
+    }
+
+    /**
      * 删除附件
+     *
      * @param id
      * @param request
      * @return
@@ -113,14 +139,19 @@ public class AttachController extends BaseController {
     public RestResponseBo delete(@RequestParam Integer id, HttpServletRequest request) {
         try {
             AttachVo attach = attachService.selectById(id);
-            if (null == attach) return RestResponseBo.fail("不存在该附件");
+            if (null == attach) {
+                return RestResponseBo.fail("不存在该附件");
+            }
             attachService.deleteById(id);
-            new File(CLASSPATH+attach.getFkey()).delete();
+            new File(CLASSPATH + attach.getFkey()).delete();
             logService.insertLog(LogActions.DEL_ARTICLE.getAction(), attach.getFkey(), request.getRemoteAddr(), this.getUid(request));
         } catch (Exception e) {
             String msg = "附件删除失败";
-            if (e instanceof TipException) {msg = e.getMessage();}
-            else {LOGGER.error(msg, e);}
+            if (e instanceof TipException) {
+                msg = e.getMessage();
+            } else {
+                LOGGER.error(msg, e);
+            }
             return RestResponseBo.fail(msg);
         }
         return RestResponseBo.ok();
