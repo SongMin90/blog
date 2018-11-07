@@ -1,5 +1,3 @@
-import sun.net.www.protocol.ftp.FtpURLConnection;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;

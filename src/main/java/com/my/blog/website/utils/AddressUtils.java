@@ -31,30 +31,44 @@ public class AddressUtils {
      *
      * @param content
      *            请求的参数 格式为：name=xxx&pwd=xxx
-     * @param encoding
+     * @param encodingString
      *            服务器端请求编码。如GBK,UTF-8等
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static String getAddresses(String content, String encodingString)
-            throws UnsupportedEncodingException {
+    public static String getAddresses(String content, String encodingString) {
         // 这里调用淘宝API
         String urlStr = "http://ip.taobao.com/service/getIpInfo.php";
         // 从http://whois.pconline.com.cn取得IP所在的省市区信息
         String returnStr = getResult(urlStr, content, encodingString);
         if (returnStr != null) {
-            // 处理返回的省市区信息
-            //System.out.println("(1) unicode转换成中文前的returnStr : " + returnStr);
+            // 处理返回的省市区信息，System.out.println("(1) unicode转换成中文前的returnStr : " + returnStr)
             returnStr = decodeUnicode(returnStr);
-            //System.out.println("(2) unicode转换成中文后的returnStr : " + returnStr);
+            // System.out.println("(2) unicode转换成中文后的returnStr : " + returnStr)
             String[] temp = returnStr.split(",");
             if(temp.length<3){
-                return "0";//无效IP，局域网测试
+                // 无效IP，局域网测试
+                return "0";
             }
             return returnStr;
         }
-        return null;
+        return "";
     }
+
+    public static String getIpAddress(String ip) {
+        if("127.0.0.1".equals(ip)) {
+            return "内网IP";
+        }
+        String address = "";
+        try {
+            address = getAddresses("ip="+ip, "utf-8");
+            JSONObject jsonObject = JSONObject.parseObject(address);
+            JSONObject data = jsonObject.getJSONObject("data");
+            address =  data.getString("country") + " " + data.getString("region") + " " + data.getString("city") + " " + data.getString("isp");
+        } catch (Exception e) {}
+        return address;
+    }
+
     /**
      * @param urlStr
      *            请求的地址
@@ -67,40 +81,76 @@ public class AddressUtils {
     private static String getResult(String urlStr, String content, String encoding) {
         URL url = null;
         HttpURLConnection connection = null;
+        DataOutputStream out = null;
+        BufferedReader reader = null;
         try {
             url = new URL(urlStr);
-            connection = (HttpURLConnection) url.openConnection();// 新建连接实例
-            connection.setConnectTimeout(2000);// 设置连接超时时间，单位毫秒
-            connection.setReadTimeout(2000);// 设置读取数据超时时间，单位毫秒
-            connection.setDoOutput(true);// 是否打开输出流 true|false
-            connection.setDoInput(true);// 是否打开输入流true|false
-            connection.setRequestMethod("POST");// 提交方法POST|GET
-            connection.setUseCaches(false);// 是否缓存true|false
-            connection.connect();// 打开连接端口
-            DataOutputStream out = new DataOutputStream(connection
-                    .getOutputStream());// 打开输出流往对端服务器写数据
-            out.writeBytes(content);// 写数据,也就是提交你的表单 name=xxx&pwd=xxx
-            out.flush();// 刷新
-            out.close();// 关闭输出流
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream(), encoding));// 往对端写完数据对端服务器返回数据
+            // 新建连接实例
+            connection = (HttpURLConnection) url.openConnection();
+            // 设置连接超时时间，单位毫秒
+            connection.setConnectTimeout(2000);
+            // 设置读取数据超时时间，单位毫秒
+            connection.setReadTimeout(2000);
+            // 是否打开输出流 true|false
+            connection.setDoOutput(true);
+            // 是否打开输入流true|false
+            connection.setDoInput(true);
+            // 提交方法POST|GET
+            connection.setRequestMethod("POST");
+            // 是否缓存true|false
+            connection.setUseCaches(false);
+            // 打开连接端口
+            connection.connect();
+            // 打开输出流往对端服务器写数据
+            out = new DataOutputStream(connection
+                    .getOutputStream());
+            // 写数据,也就是提交你的表单 name=xxx&pwd=xxx
+            out.writeBytes(content);
+            // 刷新
+            out.flush();
+            // 往对端写完数据对端服务器返回数据
+            reader = new BufferedReader(new InputStreamReader(
+                    connection.getInputStream(), encoding));
             // ,以BufferedReader流来读取
             StringBuffer buffer = new StringBuffer();
             String line = "";
             while ((line = reader.readLine()) != null) {
                 buffer.append(line);
             }
-            reader.close();
             return buffer.toString();
         } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             if (connection != null) {
-                connection.disconnect();// 关闭连接
+                // 关闭连接
+                connection.disconnect();
             }
+            // 关闭输出流
+            close(out);
+            close(reader);
         }
         return null;
     }
+
+    private static void close(DataOutputStream out) {
+        if (out != null) {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private static void close(BufferedReader reader) {
+        if (reader != null) {
+            try {
+                reader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     /**
      * unicode 转换成 中文
      *
@@ -178,20 +228,4 @@ public class AddressUtils {
         System.out.println(getIpAddress("119.123.133.38"));
     }
 
-    public static String getIpAddress(String ip) {
-        if("127.0.0.1".equals(ip)) {
-            return "内网IP";
-        }
-        AddressUtils addressUtils = new AddressUtils();
-        String address = "";
-        try {
-            address = addressUtils.getAddresses("ip="+ip, "utf-8");
-            JSONObject jsonObject = JSONObject.parseObject(address);
-            JSONObject data = jsonObject.getJSONObject("data");
-            address =  data.getString("country") + " " + data.getString("region") + " " + data.getString("city") + " " + data.getString("isp");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return address;
-    }
 }
