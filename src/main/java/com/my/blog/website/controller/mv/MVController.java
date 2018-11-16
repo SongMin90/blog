@@ -3,10 +3,13 @@ package com.my.blog.website.controller.mv;
 import com.alibaba.fastjson.JSONObject;
 import com.my.blog.website.controller.BaseController;
 import com.mzlion.easyokhttp.HttpClient;
+import com.mzlion.easyokhttp.request.GetRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * MVController
@@ -54,13 +57,33 @@ public class MVController extends BaseController {
      */
     @GetMapping("/formatM3U8")
     @ResponseBody
-    public Object formatM3U8(String url) {
-        String responseData;
+    public Object formatM3U8(@RequestParam("url") String url, @RequestParam("host") String host, HttpServletRequest request, HttpServletResponse response) {
+        if (url.contains(".m3u8")) {
+            // host存入Cookie
+            String hh = url.substring(0, url.lastIndexOf("/")) + "/";
+            Cookie cookie = new Cookie(request.getSession().getId(), hh);
+            cookie.setMaxAge(60 * 60 * 24 * 7);
+            cookie.setPath("/");
+            response.addCookie(cookie);
+        } else {
+            // 从Cookie中取出host
+            Cookie[] cookies = request.getCookies();
+            if (null != cookies) {
+                for (Cookie cookie : cookies) {
+                    if (request.getSession().getId().equals(cookie.getName())) {
+                        url = url.replace(host, cookie.getValue());
+                    }
+                }
+            }
+        }
+        Object responseData;
         try {
-            responseData = HttpClient
-                    // 请求方式和请求url
-                    .get(url)
-                    .asString();
+            GetRequest r = HttpClient.get(url);
+            if (url.contains(".m3u8")) {
+                responseData = r.asString();
+            } else {
+                responseData = r.asByteData();
+            }
         } catch (Exception e) {
             responseData = "{\"success\":false, \"description\":\""+ e.getMessage() +"\"}";
         }

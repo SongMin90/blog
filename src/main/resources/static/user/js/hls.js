@@ -12699,6 +12699,8 @@ var xhr_loader_XhrLoader = function () {
         }
       }
       if (!xhr.readyState) {
+        var host = window.location.protocol + '//' + window.location.host + '/mv/';
+        context.url = host + "formatM3U8?url=" + context.url + '&host=' + host;
         xhr.open('GET', context.url, true);
       }
     } catch (e) {
