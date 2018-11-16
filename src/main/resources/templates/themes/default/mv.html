@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="themes/default/header::header(title=${title},keywords=null)"></div>
+<body>
+<div class="main-content index-page clearfix">
+    <div class="post-lists">
+        <div class="post-lists-body">
+        </div>
+    </div>
+</div>
+<script src="/user/js/hls.js"></script>
+<script th:inline="javascript">
+    function numberFormat(playCount) {
+        var result;
+        if (playCount > 999) {
+            result = (Math.round((parseFloat(playCount) / 1000) * 10) / 10) + "K";
+        }
+        if (playCount > 9999) {
+            result = (Math.round((parseFloat(playCount) / 10000) * 10) / 10) + "W";
+        }
+        return result + " 热度";
+    }
+    $(function () {
+        $.ajax({
+            url: '/mv/'+[[${type}]],
+            type: 'POST',
+            success: function(json) {
+                if (json.success) {
+                    $.each(json.data, function(idx, val){
+                        $('.post-lists-body').append('<div class="post-list-item">\n' +
+                            '                <div class="post-list-item-container">\n' +
+                            '                    <div class="item-thumb bg-deepgrey" style="background-image:url('+val.coverUrl+');"></div>\n' +
+                            '                    <a href="/mv/mvInfo/'+val.videoInfoId+'">\n' +
+                            '                        <div class="item-desc">\n' +
+                            '                            <p>'+val.focus+'</p>\n' +
+                            '                        </div>\n' +
+                            '                    </a>\n' +
+                            '                    <div class="item-slant reverse-slant bg-deepgrey"></div>\n' +
+                            '                    <div class="item-slant"></div>\n' +
+                            '                    <div class="item-label">\n' +
+                            '                        <div class="item-title"><a href="/mv/mvInfo/\'+val.videoInfoId+\'">'+val.title+'</a>\n' +
+                            '                        </div>\n' +
+                            '                        <div class="item-meta clearfix">\n' +
+                            '                            <div class="item-meta-ico bg-ico-code" style="background: url(/user/img/bg-ico.png);no-repeat;background-size: 40px auto;"></div>\n' +
+                            '                            <div class="item-meta-cat">'+numberFormat(val.playCount)+'</div>\n' +
+                            '                        </div>\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '            </div>');
+                    });
+                } else {
+                    alert(json.description);
+                }
+            }
+        });
+    });
+</script>
+</body>
+<div th:replace="themes/default/footer::footer"></div>
+</html>

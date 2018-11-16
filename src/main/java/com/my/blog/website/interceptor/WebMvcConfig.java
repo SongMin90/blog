@@ -1,6 +1,5 @@
 package com.my.blog.website.interceptor;
 
-
 import com.my.blog.website.utils.TaleUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -31,4 +30,5 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/upload/**").addResourceLocations("file:"+ TaleUtils.getUplodFilePath()+"upload/");
         super.addResourceHandlers(registry);
     }
+
 }

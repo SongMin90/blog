@@ -53,11 +53,6 @@ public class BaseInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        // 电影API
-//        if(uri.startsWith("/movie/newMovies")) {
-//            return true;
-//        }
-
         // 拦截IP黑名单
         if(uri.startsWith("/admin/blacklist")) {
             return true;

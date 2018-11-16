@@ -26,7 +26,7 @@
 
     <!-- 根据ip和终端信息储存userId到cookie中 -->
     <script src="https://pv.sohu.com/cityjson?ie=utf-8"></script>
-    <script src="https://songm.top/upload/2018/09/sncdgtepqkid9ofu9b8016maap.js"></script>
+    <script src="/user/js/md5.js"></script>
     <script>
         var token = $.md5(returnCitySN["cip"] + navigator.userAgent.toLowerCase());
         $.cookie('userId', token, { expires: 1 }); // 存储一个带1天期限的 cookie
@@ -45,8 +45,8 @@
         </a>
         <div class="navbar-menu">
             <a th:href="${commons.site_url('/archives')}">归档</a>
-            <a th:href="${commons.site_url('/douban/in_theaters')}">热映电影</a>
-            <a th:href="${commons.site_url('/douban/top250')}">TOP250</a>
+            <a th:href="${commons.site_url('/mv/movieTop10')}">每日电影</a>
+            <a th:href="${commons.site_url('/mv/tvTop10')}">每日热剧</a>
             <a th:href="${commons.site_url('/links')}">友链</a>
             <a th:href="${commons.site_url('/chatOnline')}">在线聊天</a>
             <a th:href="${commons.site_url('/about')}">关于</a>
@@ -64,8 +64,8 @@
             <span class="icon-menu cross"><span class="middle"></span></span>
             <ul>
                 <li><a th:href="${commons.site_url('/archives')}">归档</a></li>
-                <li><a th:href="${commons.site_url('/douban/in_theaters')}">热映电影</a></li>
-                <li><a th:href="${commons.site_url('/douban/top250')}">TOP250</a></li>
+                <li><a th:href="${commons.site_url('/mv/movieTop10')}">每日电影</a></li>
+                <li><a th:href="${commons.site_url('/mv/tvTop10')}">每日热剧</a></li>
                 <li><a th:href="${commons.site_url('/links')}">友链</a></li>
                 <li><a th:href="${commons.site_url('/chatOnline')}">在线聊天</a></li>
                 <li><a th:href="${commons.site_url('/about')}">关于</a></li>

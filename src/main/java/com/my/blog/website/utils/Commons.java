@@ -483,4 +483,28 @@ public final class Commons {
         return map;
     }
 
+    /**
+     * 数字格式化
+     * @param playCount
+     * @return
+     */
+    public static String numberFormat(Long playCount) {
+        System.out.println("playCount: " + playCount);
+        if (playCount == null) {
+            return null;
+        }
+
+        String result = null;
+
+        if (playCount > 999) {
+            result = (Math.round((int) ((Double.valueOf(playCount) / 1000) * 10)) / 10) + "K";
+        }
+
+        else if (playCount > 9999) {
+            result = (Math.round((int) ((Double.valueOf(playCount) / 10000) * 10)) / 10) + "W";
+        }
+
+        return result + " 热度";
+    }
+
 }

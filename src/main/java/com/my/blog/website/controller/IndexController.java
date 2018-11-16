@@ -200,11 +200,11 @@ public class IndexController extends BaseController {
             return RestResponseBo.fail("请输入200个字符以内的评论");
         }
 
-//        String val = IPKit.getIpAddrByRequest(request) + ":" + cid;
-//        Integer count = cache.hget(Types.COMMENTS_FREQUENCY.getType(), val);
-//        if (null != count && count > 0) {
-//            return RestResponseBo.fail("您发表评论太快了，请过会再试");
-//        }
+        /*String val = IPKit.getIpAddrByRequest(request) + ":" + cid;
+        Integer count = cache.hget(Types.COMMENTS_FREQUENCY.getType(), val);
+        if (null != count && count > 0) {
+            return RestResponseBo.fail("您发表评论太快了，请过会再试");
+        }*/
 
         author = TaleUtils.cleanXSS(author);
         text = TaleUtils.cleanXSS(text);
@@ -228,8 +228,8 @@ public class IndexController extends BaseController {
             if (StringUtils.isNotBlank(url)) {
                 cookie("tale_remember_url", URLEncoder.encode(url, "UTF-8"), 7 * 24 * 60 * 60, response);
             }
-            // 设置对每个文章1分钟可以评论一次
-            //cache.hset(Types.COMMENTS_FREQUENCY.getType(), val, 1, 60);
+            /*设置对每个文章1分钟可以评论一次
+            cache.hset(Types.COMMENTS_FREQUENCY.getType(), val, 1, 60);*/
             return RestResponseBo.ok();
         } catch (Exception e) {
             String msg = "评论发布失败";
