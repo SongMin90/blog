@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="themes/default/header::header(title=${title},keywords=null)"></div>
+<body>
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="/user/css/DPlayer.min.css"/>
+<article class="main-content post-page">
+    <div id="dplayer"></div>
+    <p>
+    <div id="play_num"></div>
+    </p>
+    <div id="mv_content"></div>
+</article>
+<script src="/user/js/DPlayer.min.js"></script>
+<script src="/user/js/hls.js"></script>
+<script th:inline="javascript">
+    function openPlay(coverUrl, quality) {
+        const dp = new DPlayer({
+            container: document.getElementById('dplayer'),
+            video: {
+                quality: quality,
+                defaultQuality: 0,
+                pic: coverUrl,
+                thumbnails: coverUrl
+            }
+        });
+    }
+    function playNum(coverUrl, video) {
+        var m3u8PlayUrl = video.m3u8PlayUrl;
+        var m3u8Format = video.m3u8Format;
+        var json_arr = [];
+        for(var p in m3u8Format){
+            var json = {};
+            json['name'] = p;
+            json['url'] = m3u8PlayUrl+m3u8Format[p];
+            json['type'] = 'hls';
+            json_arr.push(json);
+        }
+        openPlay(coverUrl, json_arr);
+    }
+    function getMvInfo(num) {
+        $.ajax({
+            url: '/mv/mvInfo/'+[[${videoInfoId}]],
+            type: 'POST',
+            success: function(json) {
+                if (json.success) {
+                    $('#mv_content').text("");
+                    $('#play_num').text("");
+                    var data = json.data;
+                    $('#mv_content').append(
+                        '<div id="post-content" class="post-content">'+
+                        '<p>名称: '+data.title+'</p>'+
+                        '<p>豆瓣评分: '+data.doubanScore+'</p>'+
+                        '<p>分类: '+data.classifyTypeList+'</p>'+
+                        '<p>导演: '+data.director+'</p>'+
+                        '<p>演员: '+data.staring+'</p>'+
+                        '----------------------------------------------------------------------------------------'+
+                        '<p>简介: '+data.intro+'</p>'+
+                        '</div><br/>'
+                    );
+                    var videoList = data.videoList;
+                    var coverUrl = data.coverUrl;
+
+                    for(var v in videoList){
+                        if (v%7 == 0) {
+                            $('#play_num').append("<p></p>");
+                        }
+                        var video = videoList[v];
+                        $('#play_num').append('&nbsp;<button style="width: 40px;" type="button" class="btn btn-primary" onclick="getMvInfo('+v+');">'+video.sortNum+'</button>&nbsp;');
+                    }
+
+                    playNum(coverUrl, videoList[num]);
+                } else {
+                    alert(json.description);
+                }
+            }
+        });
+    }
+    $(function () {
+        getMvInfo(0);
+    });
+</script>
+</body>
+<div th:replace="themes/default/footer::footer"></div>
+</html>
