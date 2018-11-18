@@ -65,7 +65,7 @@ public class MVController extends BaseController {
         if (url.contains(".m3u8")) {
             // host存入Cookie
             String hh = url.substring(0, url.lastIndexOf("/")) + "/";
-            Cookie cookie = new Cookie(request.getSession().getId(), hh);
+            Cookie cookie = new Cookie("songm_mv_host", hh);
             cookie.setMaxAge(60 * 60 * 24 * 7);
             cookie.setPath("/");
             response.addCookie(cookie);
@@ -74,7 +74,7 @@ public class MVController extends BaseController {
             Cookie[] cookies = request.getCookies();
             if (null != cookies) {
                 for (Cookie cookie : cookies) {
-                    if (request.getSession().getId().equals(cookie.getName())) {
+                    if ("songm_mv_host".equals(cookie.getName())) {
                         url = url.replace(host, cookie.getValue());
                     }
                 }
