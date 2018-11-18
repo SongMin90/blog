@@ -17,6 +17,8 @@
     function openPlay(coverUrl, quality) {
         const dp = new DPlayer({
             container: document.getElementById('dplayer'),
+            // 截图
+            screenshot: true,
             video: {
                 quality: quality,
                 defaultQuality: 0,
@@ -47,6 +49,11 @@
                     $('#mv_content').text("");
                     $('#play_num').text("");
                     var data = json.data;
+
+                    // 设置title
+                    $("title").html(data.title+' - SongM');
+
+                    // 视频内容
                     $('#mv_content').append(
                         '<div id="post-content" class="post-content">'+
                         '<p>名称: '+data.title+'</p>'+
@@ -66,7 +73,11 @@
                             $('#play_num').append("<p></p>");
                         }
                         var video = videoList[v];
-                        $('#play_num').append('&nbsp;<button style="width: 40px;" type="button" class="btn btn-primary" onclick="getMvInfo('+v+');">'+video.sortNum+'</button>&nbsp;');
+                        if(v == num) {
+                            $('#play_num').append('&nbsp;<button style="width: 40px;" type="button" class="btn btn-warning" onclick="getMvInfo('+v+');">'+video.sortNum+'</button>&nbsp;');
+                        } else {
+                            $('#play_num').append('&nbsp;<button style="width: 40px;" type="button" class="btn btn-primary" onclick="getMvInfo('+v+');">'+video.sortNum+'</button>&nbsp;');
+                        }
                     }
 
                     playNum(coverUrl, videoList[num]);

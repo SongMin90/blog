@@ -2,14 +2,18 @@ package com.my.blog.website.controller.mv;
 
 import com.alibaba.fastjson.JSONObject;
 import com.my.blog.website.controller.BaseController;
+import com.my.blog.website.utils.TaleUtils;
 import com.mzlion.easyokhttp.HttpClient;
-import com.mzlion.easyokhttp.request.GetRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 
 /**
  * MVController
@@ -78,16 +82,58 @@ public class MVController extends BaseController {
         }
         Object responseData;
         try {
-            GetRequest r = HttpClient.get(url);
             if (url.contains(".m3u8")) {
-                responseData = r.asString();
+                responseData = HttpClient.get(url).asString();
             } else {
-                responseData = r.asByteData();
+                responseData = getTS(url);
             }
         } catch (Exception e) {
             responseData = "{\"success\":false, \"description\":\""+ e.getMessage() +"\"}";
         }
         return responseData;
+    }
+
+    /**
+     * 读取ts，并缓存到/upload/mv/目录
+     * @param url
+     * @return
+     */
+    private byte[] getTS(String url) {
+        String filePath = TaleUtils.getUplodFilePath() + "/mvfile/";
+        if (!new File(filePath).exists()) {
+            new File(filePath).mkdirs();
+        }
+        String fileName = filePath + TaleUtils.MD5encode(url) + ".ts";
+        File file = new File(fileName);
+
+        byte[] bytes = null;
+        FileInputStream fis = null;
+        ByteArrayOutputStream bos = null;
+        FileOutputStream fos = null;
+
+        try {
+            if (file.exists()) {
+                fis = new FileInputStream(file);
+                bos = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024 * 4];
+                int len;
+                while ((len = fis.read(buffer)) != -1) {
+                    bos.write(buffer,0, len);
+                }
+                bytes = bos.toByteArray();
+            } else {
+                bytes = HttpClient.get(url).asByteData();
+                fos = new FileOutputStream(new File(fileName));
+                fos.write(bytes);
+            }
+        } catch (Exception e) {
+        } finally {
+            try {if (bos != null) {bos.close();}} catch (Exception e) {}
+            try {if (fis != null) {fis.close();}} catch (Exception e) {}
+            try {if (fos != null) {fos.close();}} catch (Exception e) {}
+        }
+
+        return bytes;
     }
 
     /**
