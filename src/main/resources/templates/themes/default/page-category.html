@@ -9,7 +9,7 @@
         </div>
         <th:block th:if="${commons.is_empty(articles)}">
             <div>
-                <p>抱歉，还没有相关文章.</p>
+                <p>抱歉，还没有相关文章！</p>
             </div>
         </th:block>
         <th:block th:unless="${commons.is_empty(articles)}">
@@ -36,7 +36,67 @@
         </th:block>
 
     </div>
+    <div class="post-lists">
+        <div class="common-title">
+            相关视频 : <th:block th:text="${keyword}"/>
+        </div>
+        <div id="mv_list" class="post-lists-body">
+        </div>
+    </div>
 </div>
+<script th:inline="javascript">
+    function numberFormat(playCount) {
+        var result;
+        if (playCount > 999) {
+            result = (Math.round((parseFloat(playCount) / 1000) * 10) / 10) + "K";
+        }
+        if (playCount > 9999) {
+            result = (Math.round((parseFloat(playCount) / 10000) * 10) / 10) + "W";
+        }
+        return result + " 热度";
+    }
+    String.prototype.replaceAll = function (FindText, RepText) {
+        regExp = new RegExp(FindText, "g");
+        return this.replace(regExp, RepText);
+    }
+    function formatKeyWord(str) {
+        return str.replaceAll('{','<font style="color:#F00;">').replaceAll('}','</font>');
+    }
+    $(function () {
+        $.ajax({
+            url: '/mv/searchVideo/'+[[${keyword}]],
+            type: 'POST',
+            success: function(json) {
+                if (json.success) {
+                    $.each(json.data, function(idx, val){
+                        $('#mv_list').append('<div class="post-list-item">\n' +
+                            '                <div class="post-list-item-container">\n' +
+                            '                    <div class="item-thumb bg-deepgrey" style="background-image:url('+val.coverUrl+');"></div>\n' +
+                            '                    <a href="/mv/mvInfo/'+val.id+'">\n' +
+                            '                        <div class="item-desc">\n' +
+                            '                            <p>'+val.staring+'</p>\n' +
+                            '                        </div>\n' +
+                            '                    </a>\n' +
+                            '                    <div class="item-slant reverse-slant bg-deepgrey"></div>\n' +
+                            '                    <div class="item-slant"></div>\n' +
+                            '                    <div class="item-label">\n' +
+                            '                        <div class="item-title"><a href="/mv/mvInfo/'+val.id+'">'+formatKeyWord(val.title)+'</a>\n' +
+                            '                        </div>\n' +
+                            '                        <div class="item-meta clearfix">\n' +
+                            '                            <div class="item-meta-ico bg-ico-code" style="background: url(/user/img/bg-ico.png);no-repeat;background-size: 40px auto;"></div>\n' +
+                            '                            <div class="item-meta-cat">'+numberFormat(val.playCount)+'</div>\n' +
+                            '                        </div>\n' +
+                            '                    </div>\n' +
+                            '                </div>\n' +
+                            '            </div>');
+                    });
+                } else {
+                    alert(json.description);
+                }
+            }
+        });
+    });
+</script>
 </body>
 <div th:replace="themes/default/footer::footer"></div>
 </html>

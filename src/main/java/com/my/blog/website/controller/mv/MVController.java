@@ -220,4 +220,40 @@ public class MVController extends BaseController {
         return JSONObject.parseObject(responseData);
     }
 
+    /**
+     * 视频搜索
+     * @param currentPage
+     * @param pageSize
+     * @param searchContent
+     * @return
+     */
+    @PostMapping("/searchVideo/{searchContent}")
+    @ResponseBody
+    public Object searchVideo(@RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
+                              @RequestParam(value = "pageSize", defaultValue = "50") int pageSize,
+                              @PathVariable("searchContent") String searchContent) {
+        String responseData;
+        try {
+            responseData = HttpClient
+                    // 请求方式和请求url
+                    .get("http://api.hbzjmf.com/api/app/video/ver2/video/searchVideoInfo/2/7")
+                    // 设置请求参数
+                    .queryString("currentPage", currentPage)
+                    .queryString("pageSize", pageSize)
+                    .queryString("searchContent", searchContent)
+                    .queryString("entry", 1)
+                    // 设置请求头
+                    .header("Content-Type","application/json")
+                    .header("X-Client-NonceStr","AtDOYHS4oe")
+                    .header("X-Client-TimeStamp","1542596952314")
+                    .header("X-Client-Version","2.1.0")
+                    .header("X-Client-Sign","8e3d760bf27fc46f0b372dfb2cea4585267e5765ca7ee4818b9c5816583f9da6")
+                    .header("X-Auth-Token","mb_token:18182247:c580defcedc7b2679e9b0552a635f2b1")
+                    .asString();
+        } catch (Exception e) {
+            responseData = "{\"success\":false, \"description\":\""+ e.getMessage() +"\"}";
+        }
+        return JSONObject.parseObject(responseData);
+    }
+
 }

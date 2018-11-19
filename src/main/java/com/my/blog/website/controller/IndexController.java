@@ -336,7 +336,7 @@ public class IndexController extends BaseController {
         page = page < 0 || page > WebConst.MAX_PAGE ? 1 : page;
         PageInfo<ContentVo> articles = contentService.getArticles(keyword, page, limit);
         request.setAttribute("articles", articles);
-        request.setAttribute("type", "搜索");
+        request.setAttribute("type", "相关文章");
         request.setAttribute("keyword", keyword);
         return this.render("page-category");
     }
