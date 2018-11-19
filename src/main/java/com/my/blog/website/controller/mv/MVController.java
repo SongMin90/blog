@@ -85,7 +85,8 @@ public class MVController extends BaseController {
             if (url.contains(".m3u8")) {
                 responseData = HttpClient.get(url).asString();
             } else {
-                responseData = getTS(url);
+                // TODO responseData = getTS(url); 不好用，暂时舍去
+                responseData = HttpClient.get(url).asByteData();
             }
         } catch (Exception e) {
             responseData = "{\"success\":false, \"description\":\""+ e.getMessage() +"\"}";
