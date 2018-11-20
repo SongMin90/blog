@@ -3,10 +3,10 @@
 <head>
     <!-- 删除Referer -->
     <meta name="referrer" content="never"/>
+    <!--<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"/>-->
 </head>
 <div th:replace="themes/default/header::header(title=${title},keywords=null)"></div>
 <body>
-<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="/user/css/DPlayer.min.css"/>
 <article class="main-content post-page">
     <div id="dplayer"></div>
@@ -38,7 +38,7 @@
         for(var p in m3u8Format){
             var json = {};
             json['name'] = p;
-            json['url'] = m3u8PlayUrl.replace('http','https')+m3u8Format[p];
+            json['url'] = m3u8PlayUrl+m3u8Format[p];
             json['type'] = 'hls';
             if (p != 'free') {
                 json_arr.push(json);
@@ -57,7 +57,7 @@
                     var data = json.data;
 
                     // 设置title
-                    $("title").html(data.title+' 第'+num+'集');
+                    $("title").html(data.title+' 第'+(num+1)+'集');
 
                     // 视频内容
                     $('#mv_content').append(
@@ -80,9 +80,9 @@
                         }
                         var video = videoList[v];
                         if(v == num) {
-                            $('#play_num').append('&nbsp;<button style="width: 40px;" type="button" class="btn btn-warning" onclick="getMvInfo('+v+');">'+video.sortNum+'</button>&nbsp;');
+                            $('#play_num').append('&nbsp;<button style="width: 40px;color: #fff;background-color: #f0ad4e;border-color: #eea236;padding: 6px 12px;cursor: pointer;border-radius: 4px;" type="button" onclick="getMvInfo('+v+');">'+video.sortNum+'</button>&nbsp;');
                         } else {
-                            $('#play_num').append('&nbsp;<button style="width: 40px;" type="button" class="btn btn-primary" onclick="getMvInfo('+v+');">'+video.sortNum+'</button>&nbsp;');
+                            $('#play_num').append('&nbsp;<button style="width: 40px;color: #fff;background-color: #337ab7;border-color: #2e6da4;padding: 6px 12px;cursor: pointer;border-radius: 4px;" type="button" onclick="getMvInfo('+v+');">'+video.sortNum+'</button>&nbsp;');
                         }
                     }
 
