@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- 删除Referer -->
+    <meta name="referrer" content="never"/>
+</head>
 <div th:replace="themes/default/header::header(title=${title},keywords=null)"></div>
 <body>
 <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"/>
@@ -34,9 +38,11 @@
         for(var p in m3u8Format){
             var json = {};
             json['name'] = p;
-            json['url'] = m3u8PlayUrl+m3u8Format[p];
+            json['url'] = m3u8PlayUrl.replace('http','https')+m3u8Format[p];
             json['type'] = 'hls';
-            json_arr.push(json);
+            if (p != 'free') {
+                json_arr.push(json);
+            }
         }
         openPlay(coverUrl, json_arr);
     }
@@ -51,7 +57,7 @@
                     var data = json.data;
 
                     // 设置title
-                    $("title").html(data.title+' - SongM');
+                    $("title").html(data.title+' 第'+num+'集');
 
                     // 视频内容
                     $('#mv_content').append(
