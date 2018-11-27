@@ -238,8 +238,12 @@
     websocket.onerror = function(){}
     //连接成功建立的回调方法
     websocket.onopen = function(event){
-        setInterval(function(){
-            websocket.send("");
+        var interval = setInterval(function(){
+            try {
+                websocket.send("");
+            } catch (e) {
+                clearInterval(interval);
+            }
         }, 30000);
     }
     //接收到消息的回调方法
