@@ -1,14 +1,19 @@
 function openPlay(num, quality) {
+    // 集数存入cookie，30天
+    $.cookie('SongM_VideoInfoId_'+getUrlParam('videoInfoId')+'_'+'PlayNum', num, { expires: 30 });
+    // dp
     const dp = new DPlayer({
         container: document.getElementById('dplayer'),
         screenshot: true,
-		mutex: true,
-		hotkey: true,
+        autoplay: true,
+        mutex: true,
+        hotkey: true,
         video: {
             quality: quality,
-            defaultQuality: 0
+            defaultQuality: 0,
+            pic: 'https://img.zcool.cn/community/016ea057314efc0000002bf08c5256.gif'
         },
-		danmaku: {
+        danmaku: {
             id: 'SongM_VideoInfoId_'+getUrlParam('videoInfoId')+'_'+num,
             api: 'https://api.prprpr.me/dplayer/',
             token: '2333',
@@ -16,7 +21,16 @@ function openPlay(num, quality) {
             user: 'songm',
             bottom: '15%'
         }
-    })
+    });
+    // 记住播放位置
+    var seekName = 'SongM_VideoInfoId_'+getUrlParam('videoInfoId')+'_'+num+'_Seek';
+    dp.on('pause', function(){
+        $.cookie(seekName, dp.video.currentTime, { expires: 30 });
+    });
+    var seekPosition = $.cookie(seekName);
+    if (seekPosition && !isNaN(seekPosition)) {
+        dp.seek(seekPosition);
+    }
 }
 function playNum(num, video) {
     var m3u8PlayUrl = video.m3u8PlayUrl;
@@ -91,5 +105,11 @@ function getMvInfo(num) {
     })
 }
 $(function() {
-    getMvInfo(0)
+    // 上次看到集数
+    var playNum = $.cookie('SongM_VideoInfoId_'+getUrlParam('videoInfoId')+'_'+'PlayNum');
+    if (playNum && !isNaN(playNum)) {
+        getMvInfo(playNum);
+    } else {
+        getMvInfo(0);
+    }
 });
