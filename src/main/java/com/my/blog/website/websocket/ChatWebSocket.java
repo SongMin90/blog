@@ -117,16 +117,18 @@ public class ChatWebSocket {
         // 格式化消息
         message = TaleUtils.cleanXSS(message);
         message = EmojiParser.parseToAliases(message);
-        // 初始化bean
-        ChatVo chat = new ChatVo(userId, DateKit.dateFormat(new Date()), users.get(userId).getUsername(), message);
-        json.put("chat", chat);
-        // 发送消息到页面
-        sendMessage(json.toJSONString());
-        // 将消息存入数据库
-        if (chatDao == null) {
-            chatDao = ApplicationContextRegister.getApplicationContext().getBean(ChatVoMapper.class);
+        if (!"".equals(message)) {
+            // 初始化bean
+            ChatVo chat = new ChatVo(userId, DateKit.dateFormat(new Date()), users.get(userId).getUsername(), message);
+            json.put("chat", chat);
+            // 发送消息到页面
+            sendMessage(json.toJSONString());
+            // 将消息存入数据库
+            if (chatDao == null) {
+                chatDao = ApplicationContextRegister.getApplicationContext().getBean(ChatVoMapper.class);
+            }
+            chatDao.insert(chat);
         }
-        chatDao.insert(chat);
     }
 
     /**
