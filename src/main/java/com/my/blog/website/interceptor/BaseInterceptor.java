@@ -77,12 +77,15 @@ public class BaseInterceptor implements HandlerInterceptor {
         // 记录访客信息
         visitorService.save(request, req_id, ip, terminalInfo);
 
+        // cookie添加userId
+        Commons.setCookie("userId", req_id,1, response);
+
         // 请求拦截处理
         UserVo user = TaleUtils.getLoginUser(request);
         if (null == user) {
             Integer uid = TaleUtils.getCookieUid(request);
             if (null != uid) {
-                // 这里还是有安全隐患,cookie是可以伪造的
+                // 记住登录，这里还是有安全隐患，cookie是可以伪造的
                 user = userService.queryUserById(uid);
                 request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY, user);
             }
@@ -91,13 +94,15 @@ public class BaseInterceptor implements HandlerInterceptor {
             response.sendRedirect(request.getContextPath() + "/admin/login");
             return false;
         }
+
         // 设置get请求的token
-        if (request.getMethod().equals("GET")) {
+        /*if (request.getMethod().equals("GET")) {
             String csrf_token = UUID.UU64();
             // 默认存储30分钟
             cache.hset(Types.CSRF_TOKEN.getType(), csrf_token, uri, 30 * 60);
             request.setAttribute("_csrf_token", csrf_token);
-        }
+        }*/
+
         return true;
     }
 

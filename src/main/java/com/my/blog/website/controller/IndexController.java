@@ -11,6 +11,7 @@ import com.my.blog.website.modal.Bo.RestResponseBo;
 import com.my.blog.website.modal.Vo.*;
 import com.my.blog.website.service.IMetaService;
 import com.my.blog.website.service.ISiteService;
+import com.my.blog.website.utils.Commons;
 import com.my.blog.website.utils.PatternKit;
 import com.my.blog.website.utils.TaleUtils;
 import com.my.blog.website.utils.TerminalUtil;
@@ -26,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -223,10 +223,10 @@ public class IndexController extends BaseController {
         comments.setFrom(TaleUtils.MD5encode(TerminalUtil.getIp(request) + TerminalUtil.getTerminalInfo(request)));
         try {
             commentService.insertComment(comments);
-            cookie("tale_remember_author", URLEncoder.encode(author, "UTF-8"), 7 * 24 * 60 * 60, response);
-            cookie("tale_remember_mail", URLEncoder.encode(mail, "UTF-8"), 7 * 24 * 60 * 60, response);
+            Commons.setCookie("tale_remember_author", URLEncoder.encode(author, "UTF-8"), 7 * 24 * 60 * 60, response);
+            Commons.setCookie("tale_remember_mail", URLEncoder.encode(mail, "UTF-8"), 7 * 24 * 60 * 60, response);
             if (StringUtils.isNotBlank(url)) {
-                cookie("tale_remember_url", URLEncoder.encode(url, "UTF-8"), 7 * 24 * 60 * 60, response);
+                Commons.setCookie("tale_remember_url", URLEncoder.encode(url, "UTF-8"), 7 * 24 * 60 * 60, response);
             }
             /*设置对每个文章1分钟可以评论一次
             cache.hset(Types.COMMENTS_FREQUENCY.getType(), val, 1, 60);*/
@@ -403,21 +403,6 @@ public class IndexController extends BaseController {
         request.setAttribute("keyword", name);
 
         return this.render("page-category");
-    }
-
-    /**
-     * 设置cookie
-     *
-     * @param name
-     * @param value
-     * @param maxAge
-     * @param response
-     */
-    private void cookie(String name, String value, int maxAge, HttpServletResponse response) {
-        Cookie cookie = new Cookie(name, value);
-        cookie.setMaxAge(maxAge);
-        cookie.setSecure(false);
-        response.addCookie(cookie);
     }
 
 }

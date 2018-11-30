@@ -12,6 +12,8 @@ import com.my.blog.website.modal.Vo.ContentVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -505,6 +507,21 @@ public final class Commons {
         }
 
         return result + " 热度";
+    }
+
+    /**
+     * 设置cookie
+     *
+     * @param name
+     * @param value
+     * @param maxAge
+     * @param response
+     */
+    public static void setCookie(String name, String value, int maxAge, HttpServletResponse response) {
+        Cookie cookie = new Cookie(name, value);
+        cookie.setMaxAge(maxAge);
+        cookie.setSecure(false);
+        response.addCookie(cookie);
     }
 
 }
