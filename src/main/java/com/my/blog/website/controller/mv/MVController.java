@@ -147,16 +147,19 @@ public class MVController extends BaseController {
         try {
             responseData = HttpClient
                     // 请求方式和请求url
-                    .get("http://api.hbzjmf.com/api/app/video/ver2/video/columnContentMore/2/7")
+                    .get("http://api.hbzjmf.com/api/app/video/ver2/video/queryVideoInfoPage/2/7")
                     // 设置请求参数
-                    .queryString("columnId","224")
+                    .queryString("flag","1")
+                    .queryString("pageSize","9")
+                    .queryString("currentPage","1")
+                    .queryString("type","1")
                     // 设置请求头
                     .header("Content-Type","application/json")
-                    .header("X-Client-NonceStr","IMZuLBet5j")
-                    .header("X-Client-TimeStamp","1542015880275")
-                    .header("X-Client-Version","2.1.0")
-                    .header("X-Client-Sign","c0c6763bdd42c504037cdd16774ba03d6108e69a033c6b28701a85253ff09a8d")
-                    .header("X-Auth-Token","mb_token:18182247:a74c60504a173d5e8d8070323aaaa37e")
+                    .header("X-Client-NonceStr","82qqkn6RRS")
+                    .header("X-Client-TimeStamp","1544444670024")
+                    .header("X-Client-Version","2.3.0")
+                    .header("X-Client-Sign","62983cf13f9a55081e1ec2689307c5d20289a4f0842303106544687f83e3db98")
+                    .header("X-Auth-Token","mb_token:18182247:84fe024ba21c711a3d058e143bbba7aa")
                     .asString();
         } catch (Exception e) {
             responseData = "{\"success\":false, \"description\":\""+ e.getMessage() +"\"}";
@@ -172,7 +175,6 @@ public class MVController extends BaseController {
     @PostMapping("/mvInfo/{videoInfoId}")
     @ResponseBody
     public Object mvInfo(@PathVariable String videoInfoId) {
-        System.out.println(videoInfoId);
         String responseData;
         try {
             responseData = HttpClient
@@ -204,16 +206,19 @@ public class MVController extends BaseController {
         try {
             responseData = HttpClient
                     // 请求方式和请求url
-                    .get("http://api.hbzjmf.com/api/app/video/ver2/video/columnContentMore/2/7")
+                    .get("http://api.hbzjmf.com/api/app/video/ver2/video/queryVideoInfoPage/2/7")
                     // 设置请求参数
-                    .queryString("columnId","227")
+                    .queryString("flag","1")
+                    .queryString("pageSize","9")
+                    .queryString("currentPage","1")
+                    .queryString("type","2")
                     // 设置请求头
                     .header("Content-Type","application/json")
-                    .header("X-Client-NonceStr","IMZuLBet5j")
-                    .header("X-Client-TimeStamp","1542015880275")
-                    .header("X-Client-Version","2.1.0")
-                    .header("X-Client-Sign","c0c6763bdd42c504037cdd16774ba03d6108e69a033c6b28701a85253ff09a8d")
-                    .header("X-Auth-Token","mb_token:18182247:a74c60504a173d5e8d8070323aaaa37e")
+                    .header("X-Client-NonceStr","82qqkn6RRS")
+                    .header("X-Client-TimeStamp","1544444670024")
+                    .header("X-Client-Version","2.3.0")
+                    .header("X-Client-Sign","62983cf13f9a55081e1ec2689307c5d20289a4f0842303106544687f83e3db98")
+                    .header("X-Auth-Token","mb_token:18182247:84fe024ba21c711a3d058e143bbba7aa")
                     .asString();
         } catch (Exception e) {
             responseData = "{\"success\":false, \"description\":\""+ e.getMessage() +"\"}";
@@ -255,6 +260,31 @@ public class MVController extends BaseController {
             responseData = "{\"success\":false, \"description\":\""+ e.getMessage() +"\"}";
         }
         return JSONObject.parseObject(responseData);
+    }
+
+    public static void main(String[] args) {
+        String responseData;
+        try {
+            responseData = HttpClient
+                    // 请求方式和请求url
+                    .get("http://api.hbzjmf.com/api/app/video/ver2/video/queryVideoInfoPage/2/7")
+                    // 设置请求参数
+                    .queryString("flag","1")
+                    .queryString("pageSize","9")
+                    .queryString("currentPage","1")
+                    .queryString("type","2")
+                    // 设置请求头
+                    .header("Content-Type","application/json")
+                    .header("X-Client-NonceStr","82qqkn6RRS")
+                    .header("X-Client-TimeStamp","1544444670024")
+                    .header("X-Client-Version","2.3.0")
+                    .header("X-Client-Sign","62983cf13f9a55081e1ec2689307c5d20289a4f0842303106544687f83e3db98")
+                    .header("X-Auth-Token","mb_token:18182247:84fe024ba21c711a3d058e143bbba7aa")
+                    .asString();
+        } catch (Exception e) {
+            responseData = "{\"success\":false, \"description\":\""+ e.getMessage() +"\"}";
+        }
+        System.out.println(responseData);
     }
 
 }
