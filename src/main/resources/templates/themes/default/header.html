@@ -31,6 +31,35 @@
         var token = $.md5(returnCitySN["cip"] + navigator.userAgent.toLowerCase());
         $.cookie('userId', token, { expires: 1 }); // 存储一个带1天期限的 cookie
     </script>-->
+
+    <!-- 点击特效 -->
+    <script>
+        var a_idx=0;
+        jQuery(document).ready(function($){
+            addTips = function(e){
+                var a= new Array("富强", "民主", "文明", "和谐", "自由", "平等", "公正", "法治", "爱国", "敬业", "诚信", "友善");
+                var i=$("<span />").text(a[a_idx]);
+                a_idx=(a_idx+1)%a.length;
+                var x=e.pageX,y=e.pageY;
+                i.css({
+                    "z-index": 999999999999999999999999999999999999999999999999999999999999999999999,
+                    "top":y-20,
+                    "left":x,
+                    "position":"absolute",
+                    "font-weight":"bold",
+                    "color":"#ff6651"
+                });
+
+                $("body").append(i);
+                i.animate({"top": y-180,"opacity":0},1500,function(){i.remove()})
+                return false;
+            }
+            //绑定鼠标左键
+            $("body").click(addTips);
+            //绑定鼠标左键
+            $("body").bind("contextmenu",addTips)
+        });
+    </script>
 </head>
 <body  gtools_scp_screen_capture_injected="true" th:class="${is_post}?'':'bg-grey'">
 <!--[if lt IE 8]>
@@ -46,8 +75,8 @@
         <div class="navbar-menu">
             <a th:href="${commons.site_url('/archives')}">归档</a>
             <a th:href="${commons.site_url('/weiboSearchHot')}">热搜</a>
-            <a th:href="${commons.site_url('/mv/movieTop10')}">每日电影</a>
-            <a th:href="${commons.site_url('/mv/tvTop10')}">每日热剧</a>
+            <a href="https://www.zhenbuka.com/vodtype/1/" target="_blank">每日电影</a>
+            <a href="https://www.zhenbuka.com/vodtype/2/" target="_blank">每日热剧</a>
             <a href="https://music.163.com/" target="_blank">音乐盒</a>
             <a th:href="${commons.site_url('/links')}">友链</a>
             <a th:href="${commons.site_url('/chatOnline')}">在线聊天</a>
@@ -68,8 +97,8 @@
             <ul>
                 <li><a th:href="${commons.site_url('/archives')}">归档</a></li>
                 <li><a th:href="${commons.site_url('/weiboSearchHot')}">热搜</a></li>
-                <li><a th:href="${commons.site_url('/mv/movieTop10')}">每日电影</a></li>
-                <li><a th:href="${commons.site_url('/mv/tvTop10')}">每日热剧</a></li>
+                <li><a href="https://www.zhenbuka.com/vodtype/1/" target="_blank">每日电影</a></li>
+                <li><a href="https://www.zhenbuka.com/vodtype/2/" target="_blank">每日热剧</a></li>
                 <li><a href="https://music.163.com/" target="_blank">音乐盒</a></li>
                 <li><a th:href="${commons.site_url('/links')}">友链</a></li>
                 <li><a th:href="${commons.site_url('/chatOnline')}">在线聊天</a></li>
