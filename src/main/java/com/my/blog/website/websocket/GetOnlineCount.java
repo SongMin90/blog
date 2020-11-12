@@ -1,6 +1,7 @@
 package com.my.blog.website.websocket;
 
 import com.alibaba.fastjson.JSONObject;
+import com.my.blog.website.utils.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -43,9 +44,21 @@ public class GetOnlineCount {
 	 */
 	@OnOpen
 	public void onOpen(Session session, @PathParam("userId") String userId) {
+		if (userId == null || "undefined".equals(userId)) {
+			try {
+				json = new JSONObject();
+				json.put("onlineCount", -1);
+				json.put("token", UUID.UU64());
+				session.getBasicRemote().sendText(json.toJSONString());
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				return;
+			}
+		}
 		this.userId = userId;
 		// 存入用户
-		users.put(userId, session);
+		users.putIfAbsent(userId, session);
 		// 发送用户数
 		sendOnlineCount();
 	}

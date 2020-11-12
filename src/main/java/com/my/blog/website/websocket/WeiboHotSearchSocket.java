@@ -34,15 +34,21 @@ import org.slf4j.LoggerFactory;
 @Component
 public class WeiboHotSearchSocket {
 
-	private static WeiboTask weiboTask = new WeiboTask();
+	private static WeiboTask weiboTask;
 	static {
 		String THREAD_NAME = "WeiboSearchHot-Scrapy-Thread";
-		ThreadFactory customThreadFactory = new CustomThreadFactoryBuilder()
-				.setNamePrefix(THREAD_NAME).setDaemon(false)
-				.setPriority(Thread.MAX_PRIORITY).build();
-		ExecutorService executorService = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
-				new LinkedBlockingQueue<>(), customThreadFactory, new ThreadPoolExecutor.AbortPolicy());
-		executorService.execute(weiboTask);
+//		ThreadFactory customThreadFactory = new CustomThreadFactoryBuilder()
+//				.setNamePrefix(THREAD_NAME).setDaemon(false)
+//				.setPriority(Thread.MAX_PRIORITY).build();
+//		ExecutorService executorService = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS,
+//				new LinkedBlockingQueue<>(), customThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+//		executorService.execute(weiboTask);
+		if (weiboTask == null) {
+			weiboTask = new WeiboTask();
+			Thread thread = new Thread(weiboTask);
+			thread.setName(THREAD_NAME);
+			thread.start();
+		}
 	}
 
 	/**
@@ -76,7 +82,7 @@ class WeiboTask implements Runnable {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(WeiboTask.class);
 	private static final String DOMAIN_WEIBO = "http://s.weibo.com";
-	private static final long sleepTime = 3000;
+	private static final long sleepTime = 1000 * 10;
 
 	private JSONObject json = new JSONObject();
 
@@ -107,10 +113,15 @@ class WeiboTask implements Runnable {
 							sessions.remove(session);
 						}
 					}
-					Thread.sleep(sleepTime);
 				}
 			} catch (Exception e) {
 				LOGGER.error("微博热搜接口错误：" + e.getMessage());
+			} finally {
+				try {
+					Thread.sleep(sleepTime);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

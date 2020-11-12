@@ -1,5 +1,7 @@
 package com.my.blog.website.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.my.blog.website.constant.WebConst;
 import com.my.blog.website.dto.ErrorCode;
@@ -11,10 +13,7 @@ import com.my.blog.website.modal.Bo.RestResponseBo;
 import com.my.blog.website.modal.Vo.*;
 import com.my.blog.website.service.IMetaService;
 import com.my.blog.website.service.ISiteService;
-import com.my.blog.website.utils.Commons;
-import com.my.blog.website.utils.PatternKit;
-import com.my.blog.website.utils.TaleUtils;
-import com.my.blog.website.utils.TerminalUtil;
+import com.my.blog.website.utils.*;
 import com.vdurmont.emoji.EmojiParser;
 import com.my.blog.website.modal.Bo.CommentBo;
 import com.my.blog.website.service.ICommentService;
@@ -27,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -403,6 +403,24 @@ public class IndexController extends BaseController {
         request.setAttribute("keyword", name);
 
         return this.render("page-category");
+    }
+
+    @GetMapping(value = "/getUserId")
+    @ResponseBody
+    public JSONObject getUserId(HttpServletRequest request) {
+        Cookie[] cookies =  request.getCookies();
+        String userId = "";
+        for (Cookie cookie : cookies) {
+            if ("userId".equals(cookie.getName())) {
+                userId = cookie.getValue();
+            }
+        }
+        if ("".equals(userId)) {
+            userId = UUID.UU64();
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("userId", userId);
+        return jsonObject;
     }
 
 }
