@@ -223,9 +223,23 @@
 <script>
     /*当前在线*/
     function execOnline() {
-        var websocket = null;
+        //获取token
+        var token = "";
+        $.ajax({
+            async:false,
+            type:"GET",
+            url:"/getUserId",
+            dataType:"json",
+            success:function(data){
+                token = data.userId;
+            },
+            error:function(jqXHR){
+                aler("发生错误："+ jqXHR.status);
+                return;
+            }
+        });
         //开启连接
-        var token = $.cookie('userId');
+        var websocket = null;
         var url = "wss://" + window.location.host  + "/onlineCount/" + token;
         //判断当前浏览器是否支持WebSocket
         if('WebSocket' in window){
