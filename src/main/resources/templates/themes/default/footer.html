@@ -240,7 +240,7 @@
         });
         //开启连接
         var websocket = null;
-        var url = "wss://" + window.location.host  + "/onlineCount/" + token;
+        var url = "ws://" + window.location.host  + "/onlineCount/" + token;
         //判断当前浏览器是否支持WebSocket
         if('WebSocket' in window){
             websocket = new WebSocket(url);

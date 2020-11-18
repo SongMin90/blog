@@ -191,7 +191,7 @@
     var websocket = null;
     //开启连接
     var token = $.cookie('userId');
-    var url = "wss://songm.top/onlineCount/" + token;
+    var url = "ws://songm.top/onlineCount/" + token;
     //判断当前浏览器是否支持WebSocket
     if('WebSocket' in window){
         websocket = new WebSocket(url);

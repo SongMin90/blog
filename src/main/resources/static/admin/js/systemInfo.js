@@ -1,7 +1,7 @@
 $(function(){
     var websocket = null;
     //开启连接
-    var url = "wss://" + window.location.host  + "/systemInfo";
+    var url = "ws://" + window.location.host  + "/systemInfo";
     //判断当前浏览器是否支持WebSocket
     if(websocket == null){
         if('WebSocket' in window){
